@@ -47,14 +47,24 @@ in_R = ((lon >= R["lon"][0]) & (lon <= R["lon"][1])
 study = in_R & in_period
 
 # Observations where SST is available (67,5557 unavailable)
-valid_sst = study & np.isfinite(sst_c)
+valid_sst = study & np.isfinite(sst_c) & (sst_c >= -2) & (sst_c <= 35)
+np.save(CACHE / "valid_sst.npy", valid_sst)
 
 # Observations where velocity is valid
 valid_velocity = study & np.isfinite(ve) & np.isfinite(vn)
+np.save(CACHE / "valid_velocity.npy", valid_velocity)
 
 # Observations where SST and velocity are valid 
-valid_sst_velocity = study & np.isfinite(sst_c) & np.isfinite(ve) & np.isfinite(vn)
+valid_sst_velocity = study & np.isfinite(sst_c) & np.isfinite(ve) & np.isfinite(vn) & (sst_c >= -2) & (sst_c <= 35)
+np.save(CACHE / "valid_sst_velocity.npy", valid_sst_velocity)
 
 # print(f"Total study observations: {study.sum():,}")
 # print(f"Observations with SST: {valid_sst.sum():,}")
 # print(f"Missing SST: {(study & ~np.isfinite(sst_c)).sum():,}")
+# print("SST minimum:", np.nanmin(sst))
+# print("SST maximum:", np.nanmax(sst))
+# print("SST median:", np.nanmedian(sst))
+# print("Some SST values:", sst[np.isfinite(sst)][:20])
+# print("Cleaned SST minimum:", sst_c[valid_sst].min())
+# print("Cleaned SST maximum:", sst_c[valid_sst].max())
+# print("Cleaned SST median:", np.median(sst_c[valid_sst]))
