@@ -38,7 +38,7 @@ in_period = ((time_pd >= "2001-01-01") &
     (time_pd < "2023-01-01"))
 
 # Selected region - Humboldt Region 
-R = dict(lon=(-89, -65), lat=(-49, -4))
+R = dict(lon=(-94, -65), lat=(-54, -4))
 
 in_R = ((lon >= R["lon"][0]) & (lon <= R["lon"][1])
         & (lat >= R["lat"][0]) & (lat <= R["lat"][1]))
@@ -49,6 +49,19 @@ study = in_R & in_period
 # Observations where SST is available (67,5557 unavailable)
 valid_sst = study & np.isfinite(sst_c) & (sst_c >= -2) & (sst_c <= 35)
 np.save(CACHE / "valid_sst.npy", valid_sst)
+
+df = pd.DataFrame({
+    "id": ids[traj_of_obs[valid_sst]],
+    "time": time_pd[valid_sst],
+    "lon": lon[valid_sst],
+    "lat": lat[valid_sst],
+    "sst_degC": sst_c[valid_sst],
+})
+
+df["year"] = df["time"].dt.year
+df["month"] = df["time"].dt.month
+df["doy"] = df["time"].dt.dayofyear
+
 
 # Observations where velocity is valid
 valid_velocity = study & np.isfinite(ve) & np.isfinite(vn)
