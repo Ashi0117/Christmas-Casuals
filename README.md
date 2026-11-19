@@ -24,7 +24,12 @@ These changes can affect marine ecosystems and fisheries, especially in the Humb
 
 ## Region Analysis
 
-Humboldt Current
+The Humboldt Current flows northward along the west coast of South America, past Chile and Peru.
+As the map on the left shows, upwelling brings cold, nutrient-rich water to the surface. This supports marine life and makes the region highly productive for fishing.
+The figure on the right shows global marine catches, including the Southeast Pacific, labelled Area 87. This highlights the importance of the region for global fisheries.
+El Niño can reduce upwelling and disrupt fish populations and fishing activity.
+For our analysis, we have about 2.64 million observations from 695 drifters, with roughly 99 percent of the observations recorded between 2001 and 2022.
+
 
 ## Initial Data Analysis
 <img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
