@@ -1,3 +1,16 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
 
-/output.csv
-/output.csv.zip
+# Virtual environments
+.venv
+
+# macOS
+.DS_Store
+
+# Local drifter cache (symlink to local data)
+data/cache

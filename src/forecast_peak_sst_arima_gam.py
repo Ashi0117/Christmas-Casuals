@@ -4,6 +4,10 @@ from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import SplineTransformer
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]   # project root
+DATA = ROOT / "data"
 
 from forecast_episode_duration import (
     ICEN_DELAY,
@@ -19,6 +23,18 @@ LATER_PERIOD_START = pd.Period("2018-01", freq="M")
 MIN_TRAIN_ROWS = 36
 LINEAR_FEATURES = ["latest_sst", "previous_sst", "month_sin", "month_cos"]
 FEATURES = [*LINEAR_FEATURES, "available_icen"]
+
+# ---- Added models -----------------------------------------------------------
+# GAM sim: the max (El Niño) or min (La Niña) of the GAM's mean path is always milder than
+#   the typical extreme of the real, noisy path. So simulate N_SIM_PATHS paths: the GAM
+#   mean path plus whole residual paths resampled from the training months (each training
+#   issue month gives one vector of in-sample residuals across all lead times, which keeps
+#   the errors at neighbouring leads correlated). The forecast is the median of the
+#   simulated extremes.
+# Blend: 50/50 average of the GAM sim and the historical median. The weight is fixed,
+#   not tuned, because there are far too few scored episodes to tune it.
+N_SIM_PATHS = 1000
+BLEND_WEIGHT = 0.5      # weight on the GAM sim; the rest goes on the historical median
 
 
 def load_sst(filename):
@@ -56,11 +72,12 @@ def forecast_sst_path(sst, icen, issue_month, months_left):
     data["month_cos"] = np.cos(angle)
 
     predictions = []
+    residual_paths = {}   # lead -> in-sample residuals, indexed by their issue month
 
     for lead in range(1, months_left + 1):
         target_month = issue_month + lead
         if target_month not in data.index:
-            return None, "Forecast extends beyond SST calendar"
+            return None, "Forecast extends beyond SST calendar", None
 
         pairs = data.assign(
             latest_sst=data["actual"].shift(lead),
@@ -73,14 +90,27 @@ def forecast_sst_path(sst, icen, issue_month, months_left):
         inputs = pairs.loc[[target_month], FEATURES]
 
         if len(train) < MIN_TRAIN_ROWS:
-            return None, f"Too few training months at lead {lead}"
+            return None, f"Too few training months at lead {lead}", None
         if inputs.isna().any().any():
-            return None, "Missing SST or ICEN at forecast date"
+            return None, "Missing SST or ICEN at forecast date", None
 
         gam = make_gam().fit(train[FEATURES], train["actual"])
         predictions.append(gam.predict(inputs)[0])
+        residuals = train["actual"] - gam.predict(train[FEATURES])
+        residual_paths[lead] = pd.Series(residuals.to_numpy(), index=train.index - lead)
 
-    return np.asarray(predictions), "Forecast issued"
+    # Rows = training issue months with a residual at every lead (whole error paths)
+    return np.asarray(predictions), "Forecast issued", pd.DataFrame(residual_paths).dropna()
+
+
+def simulated_extreme(path, residual_paths, extreme, seed):
+    """Median extreme over the mean path plus resampled whole residual paths."""
+    if residual_paths is None or residual_paths.empty:
+        return np.nan
+    rng = np.random.default_rng(seed)
+    picks = rng.integers(0, len(residual_paths), N_SIM_PATHS)
+    simulated = path + residual_paths.to_numpy()[picks]
+    return float(np.median(extreme(simulated, axis=1)))
 
 
 def observed_extreme(sst, issue_month, end_month, extreme):
@@ -146,9 +176,9 @@ def main():
     episodes = make_forecasts(build_episode_table(icen), icen)
     icen_series = icen.set_index("month")["ICEN"]
 
-    sst_2011_2013 = load_sst("sst_forecast_data_2011_2013.csv")
-    sst_2014_2017 = load_sst("sst_forecast_data_2014_2017.csv")
-    sst_2018_2022 = load_sst("sst_forecast_data.csv")
+    sst_2011_2013 = load_sst(DATA / "processed" / "sst_forecast_data_2011_2013.csv")
+    sst_2014_2017 = load_sst(DATA / "processed" / "sst_forecast_data_2014_2017.csv")
+    sst_2018_2022 = load_sst(DATA / "processed" / "sst_forecast_data.csv")
 
     rows = []
 
@@ -181,6 +211,8 @@ def main():
             "ARIMA months left": predicted_left,
             "Actual extreme": np.nan,
             "GAM extreme": np.nan,
+            "GAM sim extreme": np.nan,
+            "Blend extreme": np.nan,
             "Persistence extreme": sst.get(issue, np.nan),
             "Historical median extreme": median,
             "Historical episodes used": history_count,
@@ -191,12 +223,18 @@ def main():
             if predicted_left == 0:
                 row["Status"] = "Predicted episode already over"
             else:
-                path, status = forecast_sst_path(
+                path, status, residual_paths = forecast_sst_path(
                     sst, icen_series, issue, int(predicted_left)
                 )
                 row["Status"] = status
                 if path is not None:
                     row["GAM extreme"] = extreme(path)
+                    row["GAM sim extreme"] = simulated_extreme(
+                        path, residual_paths, extreme, seed=int(episode["Episode_ID"])
+                    )
+                    if pd.notna(median) and pd.notna(row["GAM sim extreme"]):
+                        row["Blend extreme"] = (BLEND_WEIGHT * row["GAM sim extreme"]
+                                                + (1 - BLEND_WEIGHT) * median)
 
         # Use the actual end date only to calculate the observed outcome.
         row["Actual extreme"] = observed_extreme(
@@ -247,6 +285,13 @@ def main():
         results,
         {**original_models, "Historical median": "Historical median extreme"},
         "Three-way comparison on shared episodes",
+    )
+
+    print_scores(
+        results,
+        {**original_models, "Historical median": "Historical median extreme",
+         "GAM sim": "GAM sim extreme", "Blend (GAM sim + median)": "Blend extreme"},
+        "All methods, including the added ones, on shared episodes",
     )
 
 

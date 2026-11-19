@@ -1,9 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from pathlib import Path
 
-sst = pd.read_csv("sst_forecast_data.csv")
-icen = pd.read_csv("icen_monthly.csv").rename(
+ROOT = Path(__file__).resolve().parents[1]   # project root
+DATA = ROOT / "data"
+
+sst = pd.read_csv(DATA / "processed" / "sst_forecast_data.csv")
+icen = pd.read_csv(DATA / "processed" / "icen_monthly.csv").rename(
     columns={"Year": "year", "Month": "month"}
 )
 

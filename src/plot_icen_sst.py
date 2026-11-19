@@ -1,9 +1,17 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.patches import Patch
+from pathlib import Path
 
-sst = pd.read_csv("sst_monthly_anomalies.csv")
-icen = pd.read_csv("icen_monthly.csv").rename(
+ROOT = Path(__file__).resolve().parents[1]   # project root
+DATA = ROOT / "data"
+
+# Coastal El Niño / La Niña thresholds (°C); same rule as relabel_icen.py
+ENSO_WARM = 0.4
+ENSO_COLD = -0.4
+
+sst = pd.read_csv(DATA / "processed" / "sst_monthly_anomalies.csv")
+icen = pd.read_csv(DATA / "processed" / "icen_monthly.csv").rename(
     columns={"Year": "year", "Month": "month", "ICEN": "icen"}
 )
 
@@ -60,8 +68,8 @@ icen_line, = ax_icen.plot(
     plot_data["plot_date"], plot_data["icen"],
     color="black", linewidth=1.4, label="ICEN"
 )
-ax_icen.axhline(0.5, color="#c0392b", linestyle="--", linewidth=0.9)
-ax_icen.axhline(-0.7, color="#3155a6", linestyle="--", linewidth=0.9)
+ax_icen.axhline(ENSO_WARM, color="#c0392b", linestyle="--", linewidth=0.9)
+ax_icen.axhline(ENSO_COLD, color="#3155a6", linestyle="--", linewidth=0.9)
 ax_icen.set_title("ICEN and coastal event thresholds", loc="left")
 ax_icen.set_ylabel("ICEN (°C)")
 ax_icen.set_xlabel("Year")
@@ -79,13 +87,13 @@ for ax in (ax_sst, ax_icen):
     ax.grid(alpha=0.2)
 
 ax_icen.set_xlim(pd.Timestamp("2001-01-01"), pd.Timestamp("2023-01-01"))
-fig.savefig("humboldt_sst_icen.png", dpi=300)
+fig.savefig(ROOT / "figures" / "humboldt_sst_icen.png", dpi=300)
 
 usable = plot_data.loc[
     ~plot_data["low_coverage"] & plot_data["sst_anom"].notna()
 ]
 
-neutral = usable.loc[usable["icen"].between(-0.7, 0.5), "sst_anom"]
+neutral = usable.loc[usable["icen"].gt(ENSO_COLD) & usable["icen"].lt(ENSO_WARM), "sst_anom"]
 el_nino = usable.loc[usable["Episode"].eq("El Niño"), "sst_anom"]
 la_nina = usable.loc[usable["Episode"].eq("La Niña"), "sst_anom"]
 

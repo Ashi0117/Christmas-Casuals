@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-CACHE = Path("cache")
+CACHE = Path(__file__).resolve().parents[1] / "data" / "cache"
 
 # --------------------------------------------------
 # LOAD CLEANED DATA

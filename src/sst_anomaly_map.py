@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-CACHE = Path("cache")
+CACHE = Path(__file__).resolve().parents[1] / "data" / "cache"
 
 # Load calculated SST anomalies
 df = pd.read_csv(

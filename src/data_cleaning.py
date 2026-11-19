@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from matplotlib.gridspec import GridSpec
 
-CACHE = Path("cache")
+CACHE = Path(__file__).resolve().parents[1] / "data" / "cache"
 plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": 0.3})
 pd.set_option("display.width", 200)
 

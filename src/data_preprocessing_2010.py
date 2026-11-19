@@ -1,11 +1,15 @@
 import numpy as np
 import pandas as pd
 from scipy.interpolate import BSpline
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]   # project root
+DATA = ROOT / "data"
 
 from data_cleaning import df
 
 TRAIN_END_YEAR = 2010
-OUTPUT_FILE = "sst_forecast_data_2011_2013.csv"
+OUTPUT_FILE = DATA / "processed" / "sst_forecast_data_2011_2013.csv"
 
 LAT_SPLINE = (-54, -4, 16)
 LON_SPLINE = (-94, -65, 10)
