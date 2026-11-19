@@ -27,9 +27,11 @@ Humboldt Current
 <img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
 
 ## Feature Engineering
-a\n
-a\n
-
+a<br>
+a<br>
+a<br>
+a<br>
+a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
 ## Episode Duration
 
 ## Peak
