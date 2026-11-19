@@ -26,5 +26,21 @@ Humboldt Current
 ## Initial Data Analysis
 <img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
 
+## Feature Engineering
 
+## Episode Duration
 
+## Peak
+
+## Fish
+
+## Findings
+
+## Limitations
+
+## Future Work
+
+## References
+
+## AI Statements
+Specific examples of where AI tools helped and where they were wrong.
