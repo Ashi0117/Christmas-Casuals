@@ -17,7 +17,10 @@ We found a b and c
 
 ## Brief Overview of El Nino and La Nina
 
-El Nino is this
+El Niño and La Niña are two opposite phases of ENSO, which affect ocean temperatures across the Pacific. 
+Under normal conditions, trade winds push warm surface water westward. This allows colder, nutrient-rich water to rise near the coast of South America, in a process called upwelling. During El Niño, these trade winds weaken, so less cold water reaches the surface and the eastern Pacific becomes warmer. During La Niña, the trade winds become stronger, bringing more cold water to the surface and creating cooler conditions.
+These changes can affect marine ecosystems and fisheries, especially in the Humboldt Current region, which is the focus of our study.
+
 
 ## Region Analysis
 
