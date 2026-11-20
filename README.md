@@ -121,7 +121,7 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 
 ## 🏋️ Workflow
 
-To replicate the results, run the notebooks in `notebooks/` in the order listed below. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
+To replicate the results, run `uv run python run_all.py` (see [Usage](#-usage)), or run the notebooks in `notebooks/` in the order listed below. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
 
 **Environment:** Python ≥ 3.11 with the packages in `pyproject.toml` (see [Usage](#-usage)).
 
@@ -252,13 +252,22 @@ With only 23 events, we chose **statistical models over machine learning**: they
 
 ## 🏭 Usage
 
-### 📦 Environment
-
-The project uses Python ≥ 3.11 and `uv`. The key packages are numpy, pandas, scipy, scikit-learn, statsmodels, xgboost, matplotlib and openpyxl. You need clouddrift only for the first download and cartopy only for the study-region map.
+### ⚡ Quick start (run everything)
 
 ```bash
-uv sync
+git clone https://github.com/Ashi0117/Christmas-Casuals.git
+cd Christmas-Casuals
+uv sync                          # installs Python 3.11 and every package in pyproject.toml
+uv run python run_all.py         # runs notebooks 1 to 6 in order
 ```
+
+`run_all.py` executes each notebook top to bottom and saves its outputs, figures and CSVs. To run only some notebooks, pass their numbers, e.g. `uv run python run_all.py 3 5`. You can also open the notebooks in Jupyter or VS Code (kernel: the project's `.venv`) and run them in order.
+
+The first run needs an internet connection: notebook 2 downloads the Clouddrift drifter arrays (about 8 GB of disk) and builds the regional extracts, which takes a while. Later runs reuse `data/cache/`; once the arrays are downloaded, the six notebooks take about 3 minutes in total. The arrays are read in chunks (peak memory about 1.2 GB), so the whole pipeline runs on an 8 GB laptop.
+
+### 📦 Environment
+
+The project uses Python ≥ 3.11 and [`uv`](https://docs.astral.sh/uv/). The key packages are numpy, pandas, scipy, scikit-learn, statsmodels, xgboost, matplotlib, openpyxl and clouddrift; cartopy is only used for the study-region map, and nbconvert/ipykernel run the notebooks.
 
 On macOS, xgboost also needs `brew install libomp`.
 
@@ -284,6 +293,7 @@ The three forecasting scripts only need the CSVs in `data/processed/`.
 ```
 Christmas-Casuals/
 ├── README.md
+├── run_all.py                 ← runs notebooks 1 to 6 in order
 ├── pyproject.toml / uv.lock / .python-version
 ├── notebooks/                 ← run in order, 1 to 6
 │   ├── 1_enso_episodes.ipynb
