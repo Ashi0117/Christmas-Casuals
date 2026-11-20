@@ -87,7 +87,7 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 
 | Data product | Rows | Row meaning |
 |---|---|---|
-| `data/cache/ashita_obs.npz` | about 4.1 million | One hourly drifter reading in the forecasting box (94°W–65°W, 54°S–4°S) |
+| `data/cache/forecast_obs.npz` | about 4.1 million | One hourly drifter reading in the forecasting box (94°W–65°W, 54°S–4°S) |
 | `data/cache/humboldt_obs.npz` | about 2.6 million | One hourly drifter reading in the exploratory box (89°W–65°W, 49°S–4°S), with velocity |
 | `data/processed/sst_forecast_data*.csv` | 264 each | One calendar month, 2001–2022 |
 | `data/processed/icen_monthly_pm04.csv` | 309 | One calendar month, Jan 2001 – Sep 2026 |
@@ -144,7 +144,7 @@ To replicate the results, run the notebooks in `notebooks/` in the order listed 
 - Recovers each reading's drifter ID.
 
 **Outputs**
-- `data/cache/ashita_obs.npz`: the regional extract, about 4.1 million readings. The first run takes a few minutes; later runs load the extract in seconds.
+- `data/cache/forecast_obs.npz`: the regional extract, about 4.1 million readings. The first run takes a few minutes; later runs load the extract in seconds.
 
 ### 3️⃣ `3_sst_anomalies.ipynb`: SST Anomalies (Feature Engineering)
 
@@ -264,7 +264,7 @@ On macOS, xgboost also needs `brew install libomp`.
 
 ### Drifter data
 
-`data/cache` links to the existing `Data3001/cache` folder, so the ~8 GB of arrays aren't duplicated. If you move this project, copy or link that folder to `data/cache`.
+The drifter data is too large for the repository (about 8 GB), so `data/cache/` is not uploaded. It is created on the first run: `2_data_cleaning.ipynb` and `4_exploratory_analysis.ipynb` (and `src/data_cleaning.py`) download any missing Clouddrift `gdp1h` arrays into `data/cache/` as `.npy` files, then save the smaller regional extracts (`forecast_obs.npz`, `humboldt_obs.npz`). Later runs reuse the cached files. The download needs `clouddrift` and an internet connection.
 
 ### Standalone scripts
 
@@ -282,7 +282,7 @@ The three forecasting scripts only need the CSVs in `data/processed/`.
 ## 🗂️ Repository Structure
 
 ```
-Christmas-Casuals-final/
+Christmas-Casuals/
 ├── README.md
 ├── pyproject.toml / uv.lock / .python-version
 ├── notebooks/                 ← run in order, 1 to 6
@@ -295,7 +295,7 @@ Christmas-Casuals-final/
 │   └── archive/               the earlier combined notebooks
 ├── src/                       ← Ashita's standalone scripts
 ├── data/
-│   ├── cache/                 link to ../../cache (drifter arrays and extracts)
+│   ├── cache/                 created on first run (downloaded drifter arrays and extracts; not in git)
 │   ├── raw/                   ICEN, ONI, Niño 1+2, fish catch
 │   └── processed/             relabelled ICEN, monthly SST anomaly files
 ├── figures/                   all figures (archive_oni/ holds early ONI-based figures)

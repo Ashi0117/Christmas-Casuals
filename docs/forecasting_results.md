@@ -1,8 +1,8 @@
-> **Note (unified project folder):** this document was written for the original `Data3001` working folder. File paths in it refer to that layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
+> **Note:** this document was first written for an earlier combined notebook. File paths have been updated to this repository's layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
 
 # Ashita's forecasting code with the ±0.4 °C ENSO rule: how it works and results
 
-This document covers Ashita's scripts in `Christmas-Casuals-ashita/` (`ashita_branch`), changed to use a **±0.4 °C** coastal El Niño / La Niña rule. It explains how each script works, what changed, and every result. The duration and peak predictions get the most detail.
+This document covers Ashita's scripts in `src/` (`ashita_branch`), changed to use a **±0.4 °C** coastal El Niño / La Niña rule. It explains how each script works, what changed, and every result. The duration and peak predictions get the most detail.
 
 **The rule:** a coastal **El Niño** is ICEN **≥ +0.4 °C** for at least **3 consecutive months**, and a coastal **La Niña** is ICEN **≤ −0.4 °C** for at least 3 consecutive months. Her original data used > +0.5 °C and < −0.7 °C.
 
@@ -51,7 +51,7 @@ The cutoffs only appeared in two places: the labels already stored in `icen_mont
 ## 2. How the pipeline fits together
 
 ```
-cache/*.npy (Clouddrift gdp1h drifters)
+data/cache/*.npy (Clouddrift gdp1h drifters)
         │
         ▼
 data_cleaning.py ──► df  (one row per hourly SST reading in the study box)
@@ -81,14 +81,14 @@ icen_monthly.csv (relabelled by relabel_icen.py)     │
 Ashita's scripts were run **as they are** in a separate working folder, with two exceptions. Everything is in the session scratchpad, not in the repo.
 
 1. **`data_cleaning.py` was swapped for a stand-in.** Her version loads all ~197 million global readings at once, about 7 GB of arrays and over 10 GB at peak. That crashes an 8 GB laptop.
-   - The stand-in builds the **same `df`** (same box, period and SST filter) from `cache/ashita_obs.npz`, which `ANDRE_VERSION.ipynb` makes by reading the arrays in chunks.
+   - The stand-in builds the **same `df`** (same box, period and SST filter) from `data/cache/forecast_obs.npz`, which `notebooks/archive/02_forecasting_pipeline.ipynb` makes by reading the arrays in chunks.
    - Every script that does `from data_cleaning import df` gets the stand-in instead.
 2. **The two missing SST files were made by re-running her preprocessing script** with `TRAIN_END_YEAR = 2013` and `2017` (and matching output names). The repo has no script for these files.
    - **This is a reconstruction.** The years follow the forecast periods in her `forecast_peak_sst_arima_gam.py`.
 
 All 8 script runs finished without errors.
 
-**Cross-check:** the three SST files are byte-for-byte identical to the ones `ANDRE_VERSION.ipynb` makes, and every forecast result below matches that notebook exactly.
+**Cross-check:** the three SST files are byte-for-byte identical to the ones `notebooks/archive/02_forecasting_pipeline.ipynb` makes, and every forecast result below matches that notebook exactly.
 
 ---
 
@@ -592,8 +592,8 @@ Average drifter SST anomaly in good-coverage months:
 
 ## Reproducing the results
 
-1. **Relabel the ICEN data:** in `Christmas-Casuals-ashita/`, run `python relabel_icen.py`.
-2. **Create the cache:** make sure `cache/ashita_obs.npz` exists by running Section 1 of `ANDRE_VERSION.ipynb` once.
+1. **Relabel the ICEN data:** in `src/`, run `python relabel_icen.py`.
+2. **Create the cache:** make sure `data/cache/forecast_obs.npz` exists by running Section 1 of `notebooks/archive/02_forecasting_pipeline.ipynb` once.
 3. **Run the scripts in this order:**
    - `data_preprocessing_2010.py`, then the same script with `TRAIN_END_YEAR = 2013` and `2017` (and the matching output names);
    - `sst_monthly_anomalies.py`;
@@ -602,7 +602,7 @@ Average drifter SST anomaly in good-coverage months:
    - `forecast_peak_sst_arima_gam.py`;
    - `plot_icen_sst.py`.
 
-   On an 8 GB laptop, use a `data_cleaning.py` that loads `cache/ashita_obs.npz` instead of the full arrays.
-4. **Or run `ANDRE_VERSION.ipynb`.** It gives identical results for her original methods, plus ETS and BSTS duration methods. It doesn't yet include the hazard, ARIMA sim, GAM sim or blend models; those are only in the two scripts.
+   On an 8 GB laptop, use a `data_cleaning.py` that loads `data/cache/forecast_obs.npz` instead of the full arrays.
+4. **Or run `notebooks/archive/02_forecasting_pipeline.ipynb`.** It gives identical results for her original methods, plus ETS and BSTS duration methods. It doesn't yet include the hazard, ARIMA sim, GAM sim or blend models; those are only in the two scripts.
 
 The added models use fixed random seeds (each episode's ID), so every run gives the same numbers.

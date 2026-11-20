@@ -1,6 +1,6 @@
-> **Note (unified project folder):** this document was written for the original `Data3001` working folder. File paths in it refer to that layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
+> **Note:** this document was first written for an earlier combined notebook. File paths have been updated to this repository's layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
 
-# `humboldt_current.ipynb` explained
+# `notebooks/archive/01_exploratory_analysis.ipynb` explained
 
 This file walks through the notebook from top to bottom: what each cell does, why, what it produces, and what the results show. Cell numbers count from 0, as in the notebook.
 
@@ -31,12 +31,12 @@ This file walks through the notebook from top to bottom: what each cell does, wh
 
 **Cell 1: building a regional extract.**
 - The Clouddrift `gdp1h` dataset holds hourly readings from every drifter worldwide, about 197 million. The full arrays (position, time, SST and velocity) take up about 7 GB, which crashes an 8 GB laptop if loaded all at once.
-- If they aren't already there, the cell downloads them to `cache/` as `.npy` files.
+- If they aren't already there, the cell downloads them to `data/cache/` as `.npy` files.
 - It then reads them from disk in chunks of 2 million and keeps only readings that:
   - fall in the study box: **89°W–65°W, 49°S–4°S**;
   - fall in the study period: **2001–2022**;
   - have valid SST and both velocity components.
-- The result is saved as `cache/humboldt_obs.npz` (112 MB), so later runs skip this step.
+- The result is saved as `data/cache/humboldt_obs.npz` (112 MB), so later runs skip this step.
 
 **Cell 2: the clean table `df`.**
 - It converts SST from Kelvin to °C and works out speed as √(ve² + vn²).
@@ -105,7 +105,7 @@ This file walks through the notebook from top to bottom: what each cell does, wh
 
 **Cell 11: velocity anomalies.**
 - **Only drogued readings are used.** A drogue is the underwater sail that makes a drifter move with the water. Once a drifter loses it, wind pushes the drifter directly and its velocity no longer represents the current.
-  - Drogue-loss dates come from `cache/drogue_lost_date.npy`.
+  - Drogue-loss dates come from `data/cache/drogue_lost_date.npy`.
   - **50% of readings are drogued.**
 - The same spline model gives baselines for eastward (`ve`) and northward (`vn`) velocity, with each year left out of its own baseline as before.
 - **Result:** about 1.27 million velocity anomalies, with a typical size of 0.12–0.13 m/s.
@@ -167,7 +167,7 @@ These results are the bar a real forecasting model has to beat. The figure is sa
 
 ## Part 6: Fish catch and coastal events (cells 15–16)
 
-**The data.** `fish_data/fish_data.xlsx` comes from the group repo's `main` branch and holds Sea Around Us catch records for the Humboldt Current Large Marine Ecosystem (LME 13). It covers 1950–2019 in yearly tonnes per species, country and sector.
+**The data.** `data/raw/fish_data/fish_data.xlsx` comes from the group repo's `main` branch and holds Sea Around Us catch records for the Humboldt Current Large Marine Ecosystem (LME 13). It covers 1950–2019 in yearly tonnes per species, country and sector.
 - **Anchoveta is about 57–69% of the catch,** depending on the period.
 - Peru lands 68% and Chile 30%.
 
@@ -424,10 +424,10 @@ R² = 0.27 means last year's catch and SST together explain about a quarter of t
 ## Files
 
 **Inputs:**
-- `cache/*.npy`, `cache/humboldt_obs.npz`, `cache/drogue_lost_date.npy`: drifter data.
+- `data/cache/*.npy`, `data/cache/humboldt_obs.npz`, `data/cache/drogue_lost_date.npy`: drifter data.
 - `oni.ascii.txt`: the Oceanic Niño Index.
 - `sstoi.indices`: NOAA CPC Niño 1+2.
-- `fish_data/fish_data.xlsx`: catch data.
+- `data/raw/fish_data/fish_data.xlsx`: catch data.
 
 **Figures created:**
 - `sst_vs_oni.png`

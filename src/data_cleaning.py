@@ -10,11 +10,14 @@ plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": 0.3})
 pd.set_option("display.width", 200)
 
 VARS = ["lon", "lat", "time", "ve", "vn", "sst"]
-if not all((CACHE / f"{v}.npy").exists() for v in VARS + ["rowsize", "id"]):
+# data/cache is not in git: download any missing gdp1h arrays on the first run
+missing = [v for v in VARS + ["rowsize", "id"] if not (CACHE / f"{v}.npy").exists()]
+if missing:
     from clouddrift.datasets import gdp1h
-    CACHE.mkdir(exist_ok=True)
+    CACHE.mkdir(parents=True, exist_ok=True)
     ds = gdp1h()
-    for v in VARS + ["rowsize", "id"]:
+    for v in missing:
+        print(f"Downloading gdp1h {v} ...")
         np.save(CACHE / f"{v}.npy", ds[v].values)
 
 # Selected specific variables of interest only 
