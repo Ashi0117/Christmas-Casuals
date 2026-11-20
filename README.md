@@ -121,9 +121,19 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 
 ## 🏋️ Workflow
 
-To replicate the results, run `uv run python run_all.py` (see [Usage](#-usage)), or run the notebooks in `notebooks/` in the order listed below. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
+To replicate the results, run `uv run python run_all.py` (see [Usage](#-usage)), or run the notebooks in `notebooks/` in the order listed below, starting with `0_setup.ipynb`. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
 
 **Environment:** Python ≥ 3.11 with the packages in `pyproject.toml` (see [Usage](#-usage)).
+
+### 0️⃣ `0_setup.ipynb`: Install everything
+
+**What it does**
+- Installs every package at the exact versions in `requirements.txt` (exported from `uv.lock`).
+- Never installs into a base Python or base Anaconda: if it isn't already running in a virtual or conda environment, it creates `.venv/` in the repository and registers it as the Jupyter kernel **Christmas Casuals (.venv)**.
+- On macOS, installs `libomp` for xgboost with Homebrew if needed, then checks every package imports.
+
+**Outputs**
+- A ready project environment. If the notebook says so, switch notebooks 1 to 6 to the **Christmas Casuals (.venv)** kernel.
 
 ### 1️⃣ `1_enso_episodes.ipynb`: El Niño / La Niña episodes
 
@@ -258,8 +268,10 @@ With only 23 events, we chose **statistical models over machine learning**: they
 git clone https://github.com/Ashi0117/Christmas-Casuals.git
 cd Christmas-Casuals
 uv sync                          # installs Python 3.11 and every package in pyproject.toml
-uv run python run_all.py         # runs notebooks 1 to 6 in order
+uv run python run_all.py         # runs notebooks 0 to 6 in order
 ```
+
+**Without `uv`:** open `notebooks/0_setup.ipynb` in Jupyter or VS Code with any Python 3.11+ and run it. It creates the project environment and installs everything (see [0️⃣](#0️⃣-0_setupipynb-install-everything)). Then run notebooks 1 to 6 in order on the **Christmas Casuals (.venv)** kernel. Plain `pip install -r requirements.txt` inside your own virtual environment also works.
 
 `run_all.py` executes each notebook top to bottom and saves its outputs, figures and CSVs. To run only some notebooks, pass their numbers, e.g. `uv run python run_all.py 3 5`. You can also open the notebooks in Jupyter or VS Code (kernel: the project's `.venv`) and run them in order.
 
@@ -293,9 +305,11 @@ The three forecasting scripts only need the CSVs in `data/processed/`.
 ```
 Christmas-Casuals/
 ├── README.md
-├── run_all.py                 ← runs notebooks 1 to 6 in order
+├── run_all.py                 ← runs notebooks 0 to 6 in order
 ├── pyproject.toml / uv.lock / .python-version
-├── notebooks/                 ← run in order, 1 to 6
+├── requirements.txt           pinned versions (exported from uv.lock) for pip users
+├── notebooks/                 ← run in order, 0 to 6
+│   ├── 0_setup.ipynb
 │   ├── 1_enso_episodes.ipynb
 │   ├── 2_data_cleaning.ipynb
 │   ├── 3_sst_anomalies.ipynb
