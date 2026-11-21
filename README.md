@@ -48,8 +48,12 @@ While exploring SST patterns, we noticed that any modelling we tried was largely
 ## Findings
 
 ## Limitations
+Firstly, our modelling is heavily limited by the few La Nina and El Nino events we have to work with. In total, we have 23 events, however we could only test peak forecasts on 5 of these. While we've done what we can to avoid overfitting, this will inevitably occur due to the rarity of large-scale weather events.
+
+Secondly, the model's need for real-time data means that any delay in drifter observations will heavily limit the model's effectiveness and accuracy. If we apply this model to a real life context, fisheries need information about SST a few weeks to a month in advance to properly evaluate their business decisions.
 
 ## Future Work
+Given more time, we would have investigated drifters in other regions and how they correlate with drifters in the Humboldt Current during El Niño or La Niña events.
 
 ## References
 
