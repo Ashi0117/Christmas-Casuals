@@ -35,10 +35,16 @@ For our analysis, we have about 2.64 million observations from 695 drifters, wit
 Before building any models, we explored how the Humboldt current responds to El Niño and La Niña. We looked at 2 variables from the drifter data, the Sea surface temperature and wave velocity, and compared periods of El Niño and La Niña against neutral periods.
 
 SST:
-<img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
 We calculated sea surface temperature anomalies, meaning how far the temperature is from what is normal for that location and time of year. 
 
+<img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
 Figure 1 compares the El Niño of March 2015 to May 2016 with the La Niña of March 2007 to May 2008. During El Niño, sea surface temperature rises by 1 to 2 degrees Celsius in places. During La Niña, it falls by a similar amount. In both events the strongest effect occurs between 15 and 30 degrees south. The maps also show considerable variation between neighbouring areas, so the response is not uniform across the region.
+
+<img width="1210" height="880" alt="image" src="https://github.com/user-attachments/assets/5df54748-2836-491b-9598-40c79b046e75" />
+The above figure shows the anomalies in SST across El Niño and La Niña from 2015-2019.
+
+Wave Velocity:
+
 
 ## Feature Engineering
 <img width="936" height="869" alt="image" src="https://github.com/user-attachments/assets/0432a621-ce16-4b93-8c75-9d9a53968d2a" />
