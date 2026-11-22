@@ -50,7 +50,25 @@ In neutral conditions, trade winds influence the waves to flow westward in the n
 
 
 While exploring SST patterns, we noticed that any modelling we tried was largely unsuccessful due to the location of drifters being the main indicator of SST. As we see in the figure above (mean_sst.png), we see that drifters in the northern part of our region were generally warmer, with average temperatures ranging from 10 degrees to 24 degrees Celsius. This is largely due to the northerly flow of the Humboldt Current bringing warmer surface waters northward, while upwelling causes colder waters to rise up. We decided that we would create a new variable, **insert new variable** to mitigate this. This involved finding the mean drifter temperatures for each 1 degree by 1 degree grid, then subtracting this temperature from all observations taken inside the grid, effectively neutralising the effect of location on temperature. Thus, any further variation in temperature could be assigned to seasonality or an El Niño or La Niña event.
-## Episode Duratio
+
+## Coastal ENSO Indicator
+We identified coastal El Niño and La Niña episodes using the Coastal El Niño Index (ICEN). Since, our study focuses on the Humboldt Current, ICEN was more appropriate as its geographic focus allows us to identify warm or cold events more accurately than ENSO conditions in the central equatorial Pacific where timing and intensity are slightly different because of time lag. Like Oceanic Nino Index (ONI), ICEN calculates the three-month moving of sea surface temperature anomalies in the Niño 1+2 region instead of Niño 3.4 region. 
+
+An El Niño episode required ICEN to be greater to or equal to +0.4°C for at least three consecutive months while a La Niña episode required ICEN to be less than or equal to -0.4°C. We considered the third month as a confirmation and issued the duration forecast two months later to account for the assumed publication delay. 
+
+## Episode Duration
+We compared five forecasting methods using ICEN and historical episode outcomes, namely:
+1. Historical Median
+2. Linear Regression
+3. ARIMA
+4. Exponential Smoothing
+5. Bayesian Structural Time Series
+
+The historical median used the median remaining duration of earlier episodes of the same phase whose end dates were known. Linear regression used the ICEN value in the third qualifying month to predict remaining duration. ARIMA(1,0,1) forecasted a single monthly ICEN path over 36 months and identified the first month in which the predicted index was no longer in the episode's threshold range. Exponential smoothing simulated future monthly ICEN paths and used the median first threshold-crossing time across the simulations. Lastly, BTST simulated monthly ICEN paths from a bayesian time-series model and used the same median crossing rule as ETS. 
+
+We compared the five methods on 15 episodes with a duration estimate from every model, including seven El Niño and eight La Niña episodes. We evaluated accuracy using mean absolute error (MAE) and root mean squared error (RMSE), both in months, and reported results overall and by ENSO phase.
+
+
 
 ## Peak
 
