@@ -29,6 +29,7 @@ The Humboldt Current flows northward along the west coast of South America, alon
 This region is heavily influenced by the El Niño-Southern Oscillation (ENSO). During El Niño events, warmer surface waters weaken the upwelling, leading to a reduced supply of nutrients and, consequently, disrupting fish populations and fishing activities. In contrast, La Niña typically brings cooler conditions, which help strengthen upwelling and increase marine productivity.
 
 In this analysis, we utilized approximately 2.64 million observations from 695 drifters, with about 99% of the records collected between 2001 and 2022. These observations allowed us to compare sea surface temperatures and current speeds under different ENSO conditions.
+
 <img width="225" height="225" alt="Humboldt" src="https://github.com/user-attachments/assets/47c637e3-4936-4045-906a-fab1cecc2c03" />
 
 <img width="1013" height="871" alt="How do El Niño and La Niña affect the Humboldt current (1)" src="https://github.com/user-attachments/assets/597f07bb-80c5-4d1a-910e-c31fce156c61" />
