@@ -33,6 +33,7 @@ In this analysis, we utilized approximately 2.64 million observations from 695 d
 ![Uploading 截屏2026-11-23 10.30.09.png…]()
 
 
+
 ## Initial Data Analysis
 Before building any models, we explored how the Humboldt current responds to El Niño and La Niña. We looked at 2 variables from the drifter data, the Sea surface temperature and wave velocity, and compared periods of El Niño and La Niña against neutral periods.
 
