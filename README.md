@@ -24,14 +24,13 @@ These changes can affect marine ecosystems and fisheries, especially in the Humb
 
 ## Region Analysis
 
-The Humboldt Current flows northward along the west coast of South America, along the coasts of Chile and Peru. As shown on the map on the left, upwelling brings cold, nutrient-rich seawater to the surface, providing ideal conditions for marine life and making this region extremely rich in fishery resources. The chart on the right shows global marine catch volumes, including the Southeast Pacific—labeled as “Area 87”—highlighting the region’s importance to the global fishing industry.
+The Humboldt Current flows northward along the west coast of South America, past Chile and Peru. As shown on the map on the left, upwelling brings cold, nutrient-rich seawater to the surface, providing ideal conditions for marine life and making this region extremely rich in fishery resources. The chart on the right shows global marine catch volumes, including the Southeast Pacific—labeled as “Area 87”—highlighting the region’s importance to the global fishing industry.
 
-This region is heavily influenced by the El Niño-Southern Oscillation (ENSO). During El Niño events, warmer surface waters weaken the upwelling, leading to a reduced supply of nutrients and, consequently, disrupting fish populations and fishing activities. In contrast, La Niña typically brings cooler conditions, which help strengthen upwelling and increase marine productivity.
+This region is heavily influenced by the El Niño-Southern Oscillation (ENSO). During El Niño events, warmer surface waters weaken the upwelling, reducing nutrient availability and disrupting fish populations and fishing activities. In contrast, La Niña typically brings cooler conditions, which help strengthen upwelling and increase marine productivity.
 
 In this analysis, we utilized approximately 2.64 million observations from 695 drifters, with about 99% of the records collected between 2001 and 2022. These observations allowed us to compare sea surface temperatures and current speeds under different ENSO conditions.
 
-![Uploading 截屏2026-11-23 10.30.09.png…]()
-
+<img width="1014" height="491" alt="截屏2026-11-23 10 30 09" src="https://github.com/user-attachments/assets/f791cae1-037d-4300-93ec-67f1a4000f2f" />
 
 
 ## Initial Data Analysis
