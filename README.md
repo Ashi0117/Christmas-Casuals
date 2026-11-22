@@ -64,7 +64,9 @@ Firstly, our modelling is heavily limited by the few La Nina and El Nino events 
 Secondly, the model's need for real-time data means that any delay in drifter observations will heavily limit the model's effectiveness and accuracy. If we apply this model to a real life context, fisheries need information about SST a few weeks to a month in advance to properly evaluate their business decisions.
 
 ## Future Work
-Given more time, we would have investigated drifters in other regions and how they correlate with drifters in the Humboldt Current during El Niño or La Niña events.
+<img width="2200" height="900" alt="image" src="https://github.com/user-attachments/assets/6f2848db-a57d-4e13-aa95-e5e641d6c7c5" />
+
+Given more time, we would have investigated drifters in other regions and how they correlate with drifters in the Humboldt Current during El Niño or La Niña periods. The above image, 'sst_vs_oni.png' shows NOAA's Oceanic Niño Index (ONI) overlaid with our Humboldt SST anomaly data. There is little correlation between both plots, which led to our aforementioned decision to use ICEN values instead. We did not get the opportunity to investigate whether this lack of correlation was because of drifters and ONI measuring different phenomena or because of locational differences. If these drifters also had little correlation with ONI, we would have tried to benchmark our El Niño and La Niña events differently, perhaps not using traditional datasets.
 
 ## References
 
