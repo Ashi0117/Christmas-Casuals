@@ -40,10 +40,9 @@ We calculated sea surface temperature anomalies, meaning how far the temperature
 <img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
 Figure 1 compares the El Niño of March 2015 to May 2016 with the La Niña of March 2007 to May 2008. During El Niño, sea surface temperature rises by 1 to 2 degrees Celsius in places. During La Niña, it falls by a similar amount. In both events the strongest effect occurs between 15 and 30 degrees south. The maps also show considerable variation between neighbouring areas, so the response is not uniform across the region.
 
-<img width="1210" height="880" alt="image" src="https://github.com/user-attachments/assets/5df54748-2836-491b-9598-40c79b046e75" />
-The above figure shows the anomalies in SST across El Niño and La Niña from 2015-2019.
-
 Wave Velocity:
+<img width="366" height="289" alt="Screenshot 2026-11-22 at 14 51 19" src="https://github.com/user-attachments/assets/2f33efe8-62f1-4797-904c-db4da7d3a9df" />
+In neutral conditions, trade winds influence the waves to flow westward in the north. Figure 2 shows drifter velocity. The top left panel gives the average flow from 2001 to 2022. Westward flow is shown in red and eastward flow in blue.
 
 
 ## Feature Engineering
