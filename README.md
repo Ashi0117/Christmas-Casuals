@@ -30,7 +30,7 @@ This region is heavily influenced by the El Niño-Southern Oscillation (ENSO). D
 
 In this analysis, we utilized approximately 2.64 million observations from 695 drifters, with about 99% of the records collected between 2001 and 2022. These observations allowed us to compare sea surface temperatures and current speeds under different ENSO conditions.
 
-<img width="1016" height="501" alt="截屏2026-11-23 10 29 20" src="https://github.com/user-attachments/assets/1e5ff03f-716e-4451-ade6-a0d11f4b62b2" />
+![Uploading 截屏2026-11-23 10.30.09.png…]()
 
 
 ## Initial Data Analysis
