@@ -216,7 +216,11 @@ Our group will investigate how El Niño and La Niña affect near-surface tempera
 
 ## Exec Summary
 
-We found a b and c
+In this study, we examined how coastal El Niño and La Niña affect the Humboldt Current ooff Peru and Chile and whether those changes could inform fisheries planning. Using Global Drifter Program observations from 2001 to 2022 and the Coastal El Niño Index (ICEN), we analysed sea surface temperature (SST) and surface currents. Furthermore, given we know the start of an event, we predicted the duration of an episode and the peak SST that can be achieved during that specific episode. 
+
+In the events we examined, parts of the Humboldt Current were 1-2°C warmer than normal during El Niño and similarly cooler during La Niña. Our forecasts of when events would end were off by 2 to 3 months on average, more precisely with a mean absolute error of 1.83 months for El Niño and 2.57 months for La Niña. For La Niña, ARIMA had the lowest average error among the models tested while for El Niño, it tied with the historical median. Across the 3 La Niña events tested, the combined ARIMA-GAM model reduced the average error in forecasting the coldest remaining monthly SST anomaly from 0.32°C to 0.17°C compared to using the anomaly in the forecast month. 
+
+Sea surface temperature had a weak relationship with Peruvian anchoveta catch (r = -0.13) so we could not establish a proper causal relationship. Only at much higher temperatures, we could observe a decrease in catch like in the strong 2016 El Niño. At milder episodes, the pattern varied across events. Therefore, the catch results provide limited evidence for using SST alone to predict fisheries outcomes.  
 
 ## Brief Overview of El Nino and La Nina
 
