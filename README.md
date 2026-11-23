@@ -1,4 +1,4 @@
-<img width="2263" height="1019" alt="image" src="https://github.com/user-attachments/assets/5e952167-12ce-4f49-b2ac-2a22aa8b0315" /># DATA3001 Group 8 README
+# DATA3001 Group 8 README
 ## Technical Documentation
 
 install a b c
