@@ -132,6 +132,11 @@ https://www.seaaroundus.org/
 https://www.aoml.noaa.gov/
 https://siofen.imarpe.gob.pe/
 
+Sea Around Us. (n.d.). Sea Around Us: Fisheries, ecosystems and biodiversity data. https://www.seaaroundus.org/ 
+National Oceanic and Atmospheric Administration. (n.d.). Atlantic Oceanographic and Meteorological Laboratory. https://www.aoml.noaa.gov/
+Instituto del Mar del Perú. (n.d.). Servicio de Información Oceanográfica del Fenómeno El Niño (SIO-FEN). https://siofen.imarpe.gob.pe/
+
+
 ## AI Statements
 Our group used AI for coding, research and some scriptwriting. As all members of our group had never worked with a dataset as complex as the GDP, we had trouble with the technical setup, which we found ChatGPT and Claude to be quite helpful for. When working with complex models such as GAMs and XGBoost, we also used AI to understand and troubleshoot them. We found that AI was very useful for most coding tasks. We used Claude to compile our code and to create the final GitHub repository. Claude was somewhat useful for this, however we encountered some technical errors regarding setup. There were some technical gaps in understanding for Claude when working with the GDP dataset, perhaps due to a lack of technical documentation.
 
