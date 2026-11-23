@@ -119,13 +119,11 @@ The GDP dataset also contained 6-hourly observations from 2022 to 2025, however 
 Put this into ChatGPT later for proper referencing
 https://www.seaaroundus.org/
 https://www.aoml.noaa.gov/
+https://siofen.imarpe.gob.pe/
 
 ## AI Statements
-Specific examples of where AI tools helped and where they were wrong.
-
-Our group used AI for coding, research and some scriptwriting. As all members of our group had never worked with a dataset as complex as the GDP, we had trouble with the technical setup, which we found ChatGPT and Claude to be quite helpful for. When working with complex models such as GAMs and XGBoost, we also used AI to understand and troubleshoot them. We found that AI was very useful for most coding tasks.
+Our group used AI for coding, research and some scriptwriting. As all members of our group had never worked with a dataset as complex as the GDP, we had trouble with the technical setup, which we found ChatGPT and Claude to be quite helpful for. When working with complex models such as GAMs and XGBoost, we also used AI to understand and troubleshoot them. We found that AI was very useful for most coding tasks. We used Claude to compile our code and to create the final GitHub repository. Claude was somewhat useful for this, however we encountered some technical errors regarding setup. There were some technical gaps in understanding for Claude when working with the GDP dataset, perhaps due to a lack of technical documentation.
 
 For research, our group had very little previous knowledge or understanding of global climate patterns or oceanography. Thus, we used AI for a lot of our research into these topics. For example, we asked ChatGPT to explain potential time lags between observed El Niño effects and changes in our specified region. AI was somewhat useful for this, giving us vague time intervals, but we decided that we would go in a different direction to avoid these time lags completely. A lot of other research in understanding El Niño and La Niña, was done generally without AI, as we wanted to gain a more comprehensive understanding of why these phenomena occur.
 
-For scriptwriting,
-...
+For scriptwriting, we used AI for some of it, however more than 80% of the script and final report was written by us.
