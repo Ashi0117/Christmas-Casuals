@@ -101,7 +101,7 @@ We wanted to link fishing data to our model in order to potentially quantify the
 Our first attempt to model catch data and El Niño and La Niña was somewhat uninformative, as shown above in the second graph. We expected to see a negative correlation between SST and anchoveta numbers, as a higher SST would create less favourable conditions for fish due to reduced upwelling. This was somewhat observed, as the two sets of data returned a negative correlation coefficient of -0.13. During the extremely strong El Niño in 2016, anchoveta numbers went down more than one standard deviation, which supported our hypothesis. However, other El Niño and La Niña did not get picked up by the data. Other species shown in the graph provided similarly uncertain results.
 
 <img width="2263" height="1019" alt="image" src="https://github.com/user-attachments/assets/ce2525b2-78e0-4246-b4fe-d6b1be0b4f8a" />
-We then attempted to model the catch numbers for anchoveta using an ARIMA model.
+We then attempted to model the catch numbers for anchoveta using an ARIMA model. We compared it to two baseline persistent models, which are showed above, one of them including SST and the other without. Our model performed marginally better than the persistent models, however there was very little correlation once again. Other attempts at modelling produces similar results, showing little correlation between SST and fish catch data. Hence, we were not able to successfully model or tangibly quantify the effect of El Niño and La Niña on fishing activity in the Humboldt Current.
 
 ## Findings
 
