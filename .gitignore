@@ -1,3 +1,16 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
 
-/output.csv
-/output.csv.zip
+# Virtual environments
+.venv
+
+# Drifter data: downloaded by notebook 2 (~8 GB), never committed
+data/drifter/
+data/cache/
+*.npy
+*.npz
