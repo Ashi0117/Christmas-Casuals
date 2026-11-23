@@ -1,6 +1,6 @@
-> **Note:** this document was first written for an earlier combined notebook. File paths have been updated to this repository's layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
+> **Note:** this document describes the archived notebook `notebooks/archive/01_exploratory_analysis.ipynb`, the earlier version of `4_exploratory_analysis.ipynb`. Cell numbers and file paths refer to that notebook, which keeps its drifter data in `data/cache/`. The current pipeline downloads the drifter arrays once in `2_data_cleaning.ipynb` (into `data/drifter/gdp1h/`), and notebook 4 loads the regional extract from there. See the top-level `README.md`.
 
-# `notebooks/archive/01_exploratory_analysis.ipynb` explained
+# `01_exploratory_analysis.ipynb` explained
 
 This file walks through the notebook from top to bottom: what each cell does, why, what it produces, and what the results show. Cell numbers count from 0, as in the notebook.
 
@@ -167,7 +167,7 @@ These results are the bar a real forecasting model has to beat. The figure is sa
 
 ## Part 6: Fish catch and coastal events (cells 15–16)
 
-**The data.** `data/raw/fish_data/fish_data.xlsx` comes from the group repo's `main` branch and holds Sea Around Us catch records for the Humboldt Current Large Marine Ecosystem (LME 13). It covers 1950–2019 in yearly tonnes per species, country and sector.
+**The data.** `data/raw/fish_data/fish_data.xlsx` holds Sea Around Us catch records for the Humboldt Current Large Marine Ecosystem (LME 13). It covers 1950–2019 in yearly tonnes per species, country and sector.
 - **Anchoveta is about 57–69% of the catch,** depending on the period.
 - Peru lands 68% and Chile 30%.
 
@@ -425,8 +425,8 @@ R² = 0.27 means last year's catch and SST together explain about a quarter of t
 
 **Inputs:**
 - `data/cache/*.npy`, `data/cache/humboldt_obs.npz`, `data/cache/drogue_lost_date.npy`: drifter data.
-- `oni.ascii.txt`: the Oceanic Niño Index.
-- `sstoi.indices`: NOAA CPC Niño 1+2.
+- `data/raw/oni.ascii.txt`: the Oceanic Niño Index.
+- `data/raw/sstoi.indices`: NOAA CPC Niño 1+2.
 - `data/raw/fish_data/fish_data.xlsx`: catch data.
 
 **Figures created:**
@@ -438,4 +438,4 @@ R² = 0.27 means last year's catch and SST together explain about a quarter of t
 - `fish_vs_drifter_sst.png`
 - `anchoveta_linear_model.png`
 
-**Environment:** the notebook's kernel is `.venv-1` (Python 3.13). It needs numpy, pandas, scipy, matplotlib, statsmodels, `openpyxl` for the Excel file, and clouddrift for the first download. Install packages with `.venv-1/bin/pip install …`, because `uv add` installs into `.venv` instead.
+**Environment:** Python ≥ 3.11 with the project packages (`uv sync`, or run `notebooks/0_setup.ipynb`). The notebook needs numpy, pandas, scipy, matplotlib, statsmodels, `openpyxl` for the Excel file, and clouddrift for the first download.

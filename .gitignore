@@ -9,8 +9,8 @@ wheels/
 # Virtual environments
 .venv
 
-# macOS
-.DS_Store
-
-# Local drifter cache (symlink to local data)
-data/cache
+# Drifter data: downloaded by notebook 2 (~8 GB), never committed
+data/drifter/
+data/cache/
+*.npy
+*.npz

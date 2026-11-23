@@ -1,15 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import subprocess
-import sys
 from pathlib import Path
 
-CACHE = Path(__file__).resolve().parents[1] / "data" / "cache"
-
-# sst_anomaly.csv is written by sst_anomaly.py
-if not (CACHE / "sst_anomaly.csv").exists():
-    subprocess.run([sys.executable, str(Path(__file__).with_name("sst_anomaly.py"))], check=True)
+CACHE = Path(__file__).resolve().parents[1] / "data" / "drifter" / "gdp1h"  # shared with the notebooks; downloaded by src/data_cleaning.py or notebook 2
 
 # Load calculated SST anomalies
 df = pd.read_csv(

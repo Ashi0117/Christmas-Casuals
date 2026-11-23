@@ -1,15 +1,15 @@
-> **Note:** this document was first written for an earlier combined notebook. File paths have been updated to this repository's layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
+> **Note:** this document describes the standalone scripts in `src/`. They read from `data/raw/` and `data/processed/`, load the drifter arrays from `data/drifter/gdp1h/` and save figures to `figures/`. The notebooks in `notebooks/` cover the same methods; see the top-level `README.md`.
 
-# Ashita's forecasting code with the ±0.4 °C ENSO rule: how it works and results
+# Standalone forecasting scripts with the ±0.4 °C ENSO rule: how they work and results
 
-This document covers Ashita's scripts in `src/` (`ashita_branch`), changed to use a **±0.4 °C** coastal El Niño / La Niña rule. It explains how each script works, what changed, and every result. The duration and peak predictions get the most detail.
+This document covers the forecasting scripts in `src/`, set up to use a **±0.4 °C** coastal El Niño / La Niña rule. It explains how each script works, how the rule is applied, the models added to the scripts, and every result. The duration and peak predictions get the most detail.
 
-**The rule:** a coastal **El Niño** is ICEN **≥ +0.4 °C** for at least **3 consecutive months**, and a coastal **La Niña** is ICEN **≤ −0.4 °C** for at least 3 consecutive months. Her original data used > +0.5 °C and < −0.7 °C.
+**The rule:** a coastal **El Niño** is ICEN **≥ +0.4 °C** for at least **3 consecutive months**, and a coastal **La Niña** is ICEN **≤ −0.4 °C** for at least 3 consecutive months. The original ICEN file used > +0.5 °C and < −0.7 °C.
 
 ---
 
 ## Contents
-1. [What changed in Ashita's files](#1-what-changed-in-ashitas-files)
+1. [How the ±0.4 °C rule is applied](#1-how-the-04-c-rule-is-applied)
 2. [How the pipeline fits together](#2-how-the-pipeline-fits-together)
 3. [How the results were produced](#3-how-the-results-were-produced)
 4. [The episodes under the ±0.4 °C rule](#4-the-episodes-under-the-04-c-rule)
@@ -23,35 +23,33 @@ This document covers Ashita's scripts in `src/` (`ashita_branch`), changed to us
 
 ---
 
-## 1. What changed in Ashita's files
+## 1. How the ±0.4 °C rule is applied
 
-The cutoffs only appeared in two places: the labels already stored in `icen_monthly.csv` (no script creates them), and four hard-coded lines in two scripts. All the changes are local edits to the repo folder. Nothing was committed or pushed, and `git diff` shows them.
+The thresholds appear in two places: the episode labels stored in the ICEN file, and the end-of-episode tests in two scripts.
 
-| File | Change |
+| File | Role |
 |---|---|
-| `relabel_icen.py` (**new**) | Rebuilds the `ENSO`, `Episode` and `Episode_ID` columns of `icen_monthly.csv` with the ±0.4 °C, 3-month rule. The thresholds are named constants at the top (`ENSO_WARM`, `ENSO_COLD`, `MIN_MONTHS`). The first run keeps the original as `icen_monthly_original.csv`, and every run relabels from that original, so running it again gives the same result |
-| `icen_monthly.csv` | Relabelled. Only `ENSO`, `Episode` and `Episode_ID` change: 55 of 309 months get a new label, and later episode numbers shift. ICEN values, dates, line endings and the integer IDs are all kept as they were |
-| `icen_monthly_original.csv` (**new**) | Her original file, unchanged |
-| `forecast_episode_duration.py` | Adds `ENSO_WARM = 0.4` and `ENSO_COLD = -0.4`. The ARIMA end test (old line 100) was `path.le(0.5)` / `path.ge(-0.7)` and is now `path.lt(ENSO_WARM)` / `path.gt(ENSO_COLD)` |
-| `plot_icen_sst.py` | Adds the same constants. The dashed threshold lines (were 0.5 and −0.7) and the "neutral" months (were −0.7 to 0.5) now use them |
+| `src/relabel_icen.py` | Rebuilds the `ENSO`, `Episode` and `Episode_ID` columns from `data/raw/icen_monthly_original.csv` with the ±0.4 °C, 3-month rule, and writes `data/processed/icen_monthly.csv`. The thresholds are named constants at the top (`ENSO_WARM`, `ENSO_COLD`, `MIN_MONTHS`). Every run relabels from the original file, so running it again gives the same result |
+| `data/processed/icen_monthly.csv` | The relabelled file. Only `ENSO`, `Episode` and `Episode_ID` differ from the original: 55 of 309 months get a new label, and later episode numbers shift. ICEN values, dates, line endings and the integer IDs are kept as in the original |
+| `data/raw/icen_monthly_original.csv` | The original ICEN file with the > +0.5 / < −0.7 °C labels, unchanged |
+| `src/forecast_episode_duration.py` | Defines `ENSO_WARM = 0.4` and `ENSO_COLD = -0.4`. The ARIMA end test is `path.lt(ENSO_WARM)` / `path.gt(ENSO_COLD)` (under the old rule, `path.le(0.5)` / `path.ge(-0.7)`) |
+| `src/plot_icen_sst.py` | Uses the same constants for the dashed threshold lines and the "neutral" months |
 
-`forecast_monthly_sst.py` and `forecast_peak_sst_arima_gam.py` didn't need editing for the rule: they read the labels from the CSV, and the peak script gets the end rule by importing from `forecast_episode_duration.py`.
+`forecast_monthly_sst.py` and `forecast_peak_sst_arima_gam.py` don't hard-code the thresholds: they read the labels from the CSV, and the peak script gets the end rule by importing from `forecast_episode_duration.py`.
 
-**New models added to the scripts** (Sections 7b and 8b explain them). Her original methods and outputs are unchanged; the new ones are added alongside.
+**Models added to the scripts** (Sections 7b and 8b explain them). The original methods and outputs are unchanged; the added ones run alongside them.
 
 | File | Added |
 |---|---|
 | `forecast_episode_duration.py` | **Hazard model:** a month-by-month model of the chance an episode ends, fitted on all phases together. **ARIMA sim:** the same ARIMA(1,0,1) fit, with the forecast taken from 1,000 simulated paths. New episode-table columns `Confirmation`, `Strength` and `Trend`. A summary table scoring all 5 methods |
 | `forecast_peak_sst_arima_gam.py` | **GAM sim:** the GAM average path plus resampled whole past-error paths, taking the median simulated extreme. **Blend:** 50/50 of the GAM sim and the historical median. `forecast_sst_path` now also returns the past-error paths. A new comparison of all methods |
 
-**To undo:** run `git checkout -- .` and delete the two new files.
-
 ---
 
 ## 2. How the pipeline fits together
 
 ```
-data/cache/*.npy (Clouddrift gdp1h drifters)
+data/drifter/gdp1h/*.npy (Clouddrift gdp1h drifters)
         │
         ▼
 data_cleaning.py ──► df  (one row per hourly SST reading in the study box)
@@ -78,17 +76,17 @@ icen_monthly.csv (relabelled by relabel_icen.py)     │
 
 ## 3. How the results were produced
 
-Ashita's scripts were run **as they are** in a separate working folder, with two exceptions. Everything is in the session scratchpad, not in the repo.
+The scripts were run **as they are**, with two exceptions:
 
-1. **`data_cleaning.py` was swapped for a stand-in.** Her version loads all ~197 million global readings at once, about 7 GB of arrays and over 10 GB at peak. That crashes an 8 GB laptop.
-   - The stand-in builds the **same `df`** (same box, period and SST filter) from `data/cache/forecast_obs.npz`, which `notebooks/archive/02_forecasting_pipeline.ipynb` makes by reading the arrays in chunks.
-   - Every script that does `from data_cleaning import df` gets the stand-in instead.
-2. **The two missing SST files were made by re-running her preprocessing script** with `TRAIN_END_YEAR = 2013` and `2017` (and matching output names). The repo has no script for these files.
-   - **This is a reconstruction.** The years follow the forecast periods in her `forecast_peak_sst_arima_gam.py`.
+1. **`data_cleaning.py` was replaced by a memory-safe equivalent.** The script loads all ~197 million global readings at once, about 7 GB of arrays and over 10 GB at peak, which crashes an 8 GB laptop.
+   - The equivalent builds the **same `df`** (same box, period and SST filter) from a regional extract made by reading the arrays in chunks, as the archived `notebooks/archive/02_forecasting_pipeline.ipynb` does.
+   - Every script that does `from data_cleaning import df` receives that `df`.
+2. **The two missing SST files were made by re-running `data_preprocessing_2010.py`** with `TRAIN_END_YEAR = 2013` and `2017` (and matching output names). No script in the repo makes these files.
+   - **These files are reconstructed.** The cut-off years follow the forecast periods in `forecast_peak_sst_arima_gam.py`.
 
 All 8 script runs finished without errors.
 
-**Cross-check:** the three SST files are byte-for-byte identical to the ones `notebooks/archive/02_forecasting_pipeline.ipynb` makes, and every forecast result below matches that notebook exactly.
+**Cross-check:** the three SST files are byte-for-byte identical to the ones the archived `02_forecasting_pipeline.ipynb` makes, and every forecast result below matches that notebook exactly.
 
 ---
 
@@ -264,7 +262,7 @@ Phase values are average errors in °C.
 | La Niña | 8 | 4.88 | 5.23 | **4.09** | **4.68** | 4.25 | 5.10 |
 | All 15 | 15 | 3.53 | — | **3.05** | — | 3.87 | — |
 
-MAE is the average error and RMSE the root mean square error, both in months. The "All" row is the average over the 15 episodes; her script prints only the phase rows.
+MAE is the average error and RMSE the root mean square error, both in months. The "All" row is the average over the 15 episodes; the script prints only the phase rows.
 
 ### What the duration results show
 
@@ -281,7 +279,7 @@ MAE is the average error and RMSE the root mean square error, both in months. Th
 
 **5. The ±0.4 °C rule makes this harder than before.** Under the old > +0.5 / < −0.7 °C rule, the best errors were 1.83 months (El Niño) and 2.57 (La Niña). Now they're 1.87 and 4.09. The lower La Niña threshold produces longer episodes that are harder to predict.
 
-**In short:** at the forecast date, the most useful single piece of information is how strong the episode is (ICEN at confirmation). The time-series path (ARIMA) helps only for the longest events, and none of her methods is reliable for long La Niñas.
+**In short:** at the forecast date, the most useful single piece of information is how strong the episode is (ICEN at confirmation). The time-series path (ARIMA) helps only for the longest events, and none of the three original methods is reliable for long La Niñas.
 
 ### 7b. Added duration models
 
@@ -535,7 +533,7 @@ Both were added to `forecast_peak_sst_arima_gam.py` to fix the main problem abov
 
 ## 9. SST by ENSO phase (`plot_icen_sst.py`)
 
-The plot is saved as `ashita_humboldt_sst_icen_pm04.png`. It shows the location-corrected monthly drifter SST anomaly with a 3-month smoothed line, and ICEN with the ±0.4 °C lines, with the episodes shaded.
+The plot is saved as `humboldt_sst_icen_pm04.png`. It shows the location-corrected monthly drifter SST anomaly with a 3-month smoothed line, and ICEN with the ±0.4 °C lines, with the episodes shaded.
 
 Average drifter SST anomaly in good-coverage months:
 
@@ -552,7 +550,7 @@ Average drifter SST anomaly in good-coverage months:
 
 ## 10. Overall conclusions
 
-| Task | Best of her methods | **Best with the added models** | Takeaway |
+| Task | Best original method | **Best with the added models** | Takeaway |
 |---|---|---|---|
 | Next-month SST | Regression ≈ XGBoost, 0.195 °C (persistence 0.216) | — (no models added) | Lagged SST holds most of the signal, and ICEN adds almost nothing |
 | **Duration** (months left) | Regression: 3.05 months (El Niño 1.87, La Niña 4.09) | **ARIMA sim: 2.60 months** (El Niño 1.86, La Niña 3.25). The hazard model is best for El Niño (1.71) | Simulating ICEN paths removes ARIMA's forecast-too-long bias. Strength at confirmation helps for short episodes. Long La Niñas are still the hardest |
@@ -569,11 +567,11 @@ Average drifter SST anomaly in good-coverage months:
 ## 11. Limitations
 
 - **Very few events:** 15 shared episodes for duration, 5 for peak (2 El Niño). None of these rankings is statistically secure.
-- **Reconstructed inputs:** two of the three SST forecast files are my reconstruction. Her actual files may differ.
-- **A stand-in for `data_cleaning.py`:** it gives the same `df` from a memory-safe cache. Her original can't run on an 8 GB laptop.
+- **Reconstructed inputs:** two of the three SST forecast files are reconstructed (see Section 3), and the files originally used with the scripts may differ.
+- **A memory-safe `data_cleaning.py`:** the results use an equivalent that gives the same `df` from a regional extract, because `src/data_cleaning.py` can't run on an 8 GB laptop.
 - **Ongoing episodes:** episode 23 (2021–22 La Niña) can't be scored for peak because of SST gaps.
 - **ICEN is not drifter data.** Duration forecasts use ICEN only. Drifter data enters the next-month and peak forecasts through the SST anomaly series.
-- **The threshold choice matters:** results change noticeably between ±0.4 °C and > +0.5 / < −0.7 °C. The group should agree on one definition.
+- **The threshold choice matters:** results change noticeably between ±0.4 °C and > +0.5 / < −0.7 °C. The project uses ±0.4 °C throughout.
 - **The added models are tested on the same few episodes:** 15 for duration, 5 for peak. The ARIMA sim and GAM sim gains are large and consistent, but not statistically secure.
 - **The GAM sim uses the model's errors on its own training months.** Those are a little smaller than its errors on new data, so the simulated range is slightly too narrow. Errors on held-out months would fix this.
 - **The GAM sim depends on ARIMA's horizon:** part of its La Niña advantage comes from ARIMA's overlong horizons (see 8b).
@@ -584,7 +582,7 @@ Average drifter SST anomaly in good-coverage months:
 
 1. **Use the ARIMA sim duration as the peak horizon:** fewer forecasts for already-ended episodes, and a fairer test of the GAM sim.
 2. **Combine the duration methods:** for example, add the ARIMA sim end month as an input to the hazard model.
-3. **Forecast the northern SST** (`sst_anom_north`, north of 30°S), where the coastal El Niño signal is strongest. This needs a change to her preprocessing script.
+3. **Forecast the northern SST** (`sst_anom_north`, north of 30°S), where the coastal El Niño signal is strongest. This needs a change to `data_preprocessing_2010.py`.
 4. **Train duration models on a longer ICEN or Niño 1+2 record,** testing by leaving each episode out in turn.
 5. **Report a likely range,** not just one number: the 10th–90th percentiles of the simulations already exist.
 
@@ -592,17 +590,17 @@ Average drifter SST anomaly in good-coverage months:
 
 ## Reproducing the results
 
-1. **Relabel the ICEN data:** in `src/`, run `python relabel_icen.py`.
-2. **Create the cache:** make sure `data/cache/forecast_obs.npz` exists by running Section 1 of `notebooks/archive/02_forecasting_pipeline.ipynb` once.
-3. **Run the scripts in this order:**
-   - `data_preprocessing_2010.py`, then the same script with `TRAIN_END_YEAR = 2013` and `2017` (and the matching output names);
-   - `sst_monthly_anomalies.py`;
-   - `forecast_monthly_sst.py`;
-   - `forecast_episode_duration.py`;
-   - `forecast_peak_sst_arima_gam.py`;
-   - `plot_icen_sst.py`.
+1. **Download the drifter data:** run `notebooks/2_data_cleaning.ipynb` once. It downloads the Clouddrift `gdp1h` arrays into `data/drifter/gdp1h/` (`src/data_cleaning.py` also downloads any missing arrays).
+2. **Relabel the ICEN data:** `python src/relabel_icen.py`.
+3. **Run the scripts in this order** (from any folder):
+   - `src/data_preprocessing_2010.py`, then the same script with `TRAIN_END_YEAR = 2013` and `2017` (and the matching output names);
+   - `src/sst_monthly_anomalies.py`;
+   - `src/forecast_monthly_sst.py`;
+   - `src/forecast_episode_duration.py`;
+   - `src/forecast_peak_sst_arima_gam.py`;
+   - `src/plot_icen_sst.py`.
 
-   On an 8 GB laptop, use a `data_cleaning.py` that loads `data/cache/forecast_obs.npz` instead of the full arrays.
-4. **Or run `notebooks/archive/02_forecasting_pipeline.ipynb`.** It gives identical results for her original methods, plus ETS and BSTS duration methods. It doesn't yet include the hazard, ARIMA sim, GAM sim or blend models; those are only in the two scripts.
+   `src/data_cleaning.py` loads the full arrays at once and needs more than 10 GB of memory. On a smaller machine, use a version of `data_cleaning.py` that builds `df` from a regional extract read in chunks.
+4. **Or run the archived `notebooks/archive/02_forecasting_pipeline.ipynb`.** It gives identical results for the original methods, plus ETS and BSTS duration methods. It doesn't include the hazard, ARIMA sim, GAM sim or blend models; those are only in the two scripts.
 
 The added models use fixed random seeds (each episode's ID), so every run gives the same numbers.

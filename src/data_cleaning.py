@@ -5,19 +5,16 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from matplotlib.gridspec import GridSpec
 
-CACHE = Path(__file__).resolve().parents[1] / "data" / "cache"
+CACHE = Path(__file__).resolve().parents[1] / "data" / "drifter" / "gdp1h"  # shared with the notebooks; downloaded by src/data_cleaning.py or notebook 2
 plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": 0.3})
 pd.set_option("display.width", 200)
 
 VARS = ["lon", "lat", "time", "ve", "vn", "sst"]
-# data/cache is not in git: download any missing gdp1h arrays on the first run
-missing = [v for v in VARS + ["rowsize", "id"] if not (CACHE / f"{v}.npy").exists()]
-if missing:
+if not all((CACHE / f"{v}.npy").exists() for v in VARS + ["rowsize", "id"]):
     from clouddrift.datasets import gdp1h
     CACHE.mkdir(parents=True, exist_ok=True)
     ds = gdp1h()
-    for v in missing:
-        print(f"Downloading gdp1h {v} ...")
+    for v in VARS + ["rowsize", "id"]:
         np.save(CACHE / f"{v}.npy", ds[v].values)
 
 # Selected specific variables of interest only 

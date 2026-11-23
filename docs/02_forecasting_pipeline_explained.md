@@ -1,8 +1,8 @@
-> **Note:** this document was first written for an earlier combined notebook. File paths have been updated to this repository's layout. In this folder, data now lives in `data/raw/` and `data/processed/`, Ashita's scripts in `src/`, the notebooks in `notebooks/` and figures in `figures/`. See the top-level `README.md`.
+> **Note:** this document describes the archived notebook `notebooks/archive/02_forecasting_pipeline.ipynb`, the earlier combined version of notebooks 1–3, 5 and 6. Section numbers and file paths refer to that notebook, which keeps its drifter data in `data/cache/`. The standalone scripts it is built from are in `src/`. See the top-level `README.md`.
 
-# `notebooks/archive/02_forecasting_pipeline.ipynb` explained
+# `02_forecasting_pipeline.ipynb` explained
 
-This notebook brings Ashita's data preprocessing and forecasting scripts together in one place. They come from the group repo (`Christmas-Casuals`, `ashita_branch`, commits `105c452` and `7ff8b8a`, 10 Nov 2026), and the notebook runs them in order from this repository. This file explains what each section does, what was changed from her code and why, and what the results show.
+This notebook runs the project's data preprocessing and forecasting steps in order, in one place. Each section follows one of the standalone scripts in `src/`. This file explains what each section does, how it differs from the scripts and why, and what the results show.
 
 **The question:** in the Humboldt Current, can we forecast:
 1. next month's SST anomaly;
@@ -15,7 +15,7 @@ This notebook brings Ashita's data preprocessing and forecasting scripts togethe
 
 ## Quick reference
 
-| Section | From Ashita's file | What it does | Output |
+| Section | Standalone script | What it does | Output |
 |---|---|---|---|
 | Setup | — | Relabels the ICEN episodes with the ±0.4 °C rule | `icen_monthly_pm04.csv`, `ICEN_CSV` |
 | 1 | `data_cleaning.py` | Loads drifter SST for the study region and period | `df`, `data/cache/forecast_obs.npz` |
@@ -38,29 +38,29 @@ This notebook brings Ashita's data preprocessing and forecasting scripts togethe
 
 ---
 
-## Changes from Ashita's code
+## Differences from the standalone scripts
 
-The code is hers, apart from these changes:
+The notebook runs the same code as the scripts in `src/`, with these differences:
 
 1. **Imports between files removed.** `from data_cleaning import df` and `from forecast_episode_duration import ...` are gone, because those objects are already defined in earlier cells.
 2. **`main()` is called directly,** instead of through `if __name__ == "__main__":`.
-3. **In Section 5, `FEATURES` is renamed `PEAK_FEATURES`.** Both of her forecasting scripts define a global `FEATURES`. In one notebook, Section 5's version would overwrite Section 4's, and Section 4's `make_forecasts` would then crash when Section 5 calls it.
-4. **Section 1 reads the drifter data in chunks.** Her `data_cleaning.py` loads the full global arrays at once, about 7 GB for the raw arrays and over 10 GB at peak. That's more memory than an 8 GB laptop has. The chunked version keeps exactly the same readings. It saves them once to `data/cache/forecast_obs.npz`, and the whole notebook then peaks at about 1.5 GB.
-5. **Section 2 runs three times.** Her script made only `sst_forecast_data_2011_2013.csv`, but Sections 3 and 5 also need `sst_forecast_data.csv` and `sst_forecast_data_2014_2017.csv`. No script in the repo makes those two files, on any branch. Section 2 is now a function of `TRAIN_END_YEAR` and the output filename, and it runs for 2010, 2013 and 2017.
-   - **This is a reconstruction.** The years follow the forecast periods set in her `forecast_peak_sst_arima_gam.py`, but her actual files may differ.
-6. **The El Niño / La Niña rule is now ±0.4 °C for 3 consecutive months.**
-   - The setup cell rebuilds `ENSO`, `Episode` and `Episode_ID` from the monthly ICEN. Her file used > +0.5 °C and < −0.7 °C.
+3. **In Section 5, `FEATURES` is renamed `PEAK_FEATURES`.** Both forecasting scripts define a global `FEATURES`. In one notebook, Section 5's version would overwrite Section 4's, and Section 4's `make_forecasts` would then crash when Section 5 calls it.
+4. **Section 1 reads the drifter data in chunks.** `data_cleaning.py` loads the full global arrays at once, about 7 GB for the raw arrays and over 10 GB at peak. That's more memory than an 8 GB laptop has. The chunked version keeps exactly the same readings. It saves them once to `data/cache/forecast_obs.npz`, and the whole notebook then peaks at about 1.5 GB.
+5. **Section 2 runs three times.** `data_preprocessing_2010.py` makes only `sst_forecast_data_2011_2013.csv`, but Sections 3 and 5 also need `sst_forecast_data.csv` and `sst_forecast_data_2014_2017.csv`, and no script in the repo makes those two files. Section 2 is therefore a function of `TRAIN_END_YEAR` and the output filename, and it runs for 2010, 2013 and 2017.
+   - **These two files are reconstructed.** The cut-off years follow the forecast periods set in `forecast_peak_sst_arima_gam.py`; the files originally used with the scripts may differ.
+6. **The El Niño / La Niña rule is ±0.4 °C for 3 consecutive months.**
+   - The setup cell rebuilds `ENSO`, `Episode` and `Episode_ID` from the monthly ICEN. The original ICEN file used > +0.5 °C and < −0.7 °C.
    - The new episodes go to every section: Section 3's phase labels, Section 4's episode table, and Section 5's episodes.
-   - Section 4's ARIMA now treats an episode as over once its forecast ICEN path leaves ±0.4 °C. It used 0.5 and −0.7 before.
-7. **Section 4 has two new duration methods, ETS and BSTS.** See Section 4 below.
+   - Section 4's ARIMA treats an episode as over once its forecast ICEN path leaves ±0.4 °C, rather than 0.5 and −0.7.
+7. **Section 4 adds two duration methods, ETS and BSTS.** See Section 4 below.
 
-Her velocity masks (`valid_velocity.npy` and `valid_sst_velocity.npy`) aren't recreated, because nothing in this notebook uses them.
+The velocity masks `valid_velocity.npy` and `valid_sst_velocity.npy` aren't recreated, because nothing in this notebook uses them.
 
 ---
 
 ## Setup: relabelling the episodes
 
-1. **Read** Ashita's ICEN file.
+1. **Read** the original ICEN file.
 2. **Mark qualifying months.** A month is El Niño if ICEN ≥ +0.4 °C and it's part of a run of at least 3 such months in a row. La Niña is the same at ≤ −0.4 °C.
 3. **Label each month.** `ENSO` is El Niño, La Niña or Neutral. `Episode` is El Niño, La Niña or No. `Episode_ID` numbers each run in time order.
 4. **Save** the result as `icen_monthly_pm04.csv` and set `ICEN_CSV` to it.
@@ -91,7 +91,7 @@ Her velocity masks (`valid_velocity.npy` and `valid_sst_velocity.npy`) aren't re
 
 **The table `df`:** one row per reading, with drifter ID, time, longitude, latitude, `sst_degC`, year, month and day of year.
 
-**Result:** 4,081,401 readings. This is more than the 2.5 million in `notebooks/archive/01_exploratory_analysis.ipynb`, because Ashita's box is larger (it reaches 94°W and 54°S, against 89°W and 49°S) and she doesn't require velocity.
+**Result:** 4,081,401 readings. This is more than the 2.5 million in the exploratory notebook, because this box is larger (it reaches 94°W and 54°S, against 89°W and 49°S) and valid velocity isn't required.
 
 ---
 
@@ -296,10 +296,10 @@ Values are average errors in °C.
 ## Limitations
 
 - **Small samples:** 58 test months, of which only 4 are El Niño; 15 shared episodes in Section 4; 2–3 episodes per comparison in Section 5.
-- **Reconstructed inputs:** the 2014–2017 and 2018–2022 SST files are my reconstruction of files that aren't in the repo.
+- **Reconstructed inputs:** the 2014–2017 and 2018–2022 SST files are reconstructions of files that aren't in the repo.
 - **Capped forecasts:** ETS and BSTS forecasts are capped at the 36-month window when the median path never ends the episode (2 episodes for ETS, 1 for BSTS). Without the cap their errors would be larger still.
-- **The BSTS is hand-written:** it's my numpy implementation of a local-level BSTS, following the R `bsts` method and priors, not the `bsts` package itself.
-- **Different setup from `notebooks/archive/01_exploratory_analysis.ipynb`:** Ashita's study box (94°W–65°W, 54°S–4°S) is larger. That notebook's events also use Niño 1+2 with +0.4 / −1.0 °C. So these anomalies and episodes aren't directly comparable with that notebook's.
+- **The BSTS is hand-written:** it's a numpy implementation of a local-level BSTS, following the R `bsts` method and priors, not the `bsts` package itself.
+- **Different setup from the exploratory notebook:** the study box here (94°W–65°W, 54°S–4°S) is larger, and the exploratory notebook defines its events from Niño 1+2 rather than ICEN. So these anomalies and episodes aren't directly comparable with that notebook's.
 - **ICEN and the El Niño label:** ICEN is a NOAA-based index, not drifter data. The drifter data enters only through the SST anomaly series in Sections 2, 3 and 5.
 
 ## Files
@@ -310,10 +310,10 @@ Values are average errors in °C.
 - `data/raw/icen_monthly_original.csv`
 
 **Writes:**
-- `icen_monthly_pm04.csv` (the ICEN episodes relabelled with the ±0.4 °C rule)
+- `data/processed/icen_monthly_pm04.csv` (the ICEN episodes relabelled with the ±0.4 °C rule)
 - `data/cache/forecast_obs.npz` (first run)
-- `sst_forecast_data_2011_2013.csv`
-- `sst_forecast_data_2014_2017.csv`
-- `sst_forecast_data.csv`
+- `data/processed/sst_forecast_data_2011_2013.csv`
+- `data/processed/sst_forecast_data_2014_2017.csv`
+- `data/processed/sst_forecast_data.csv`
 
-**Environment:** kernel `.venv-1` (Python 3.13). Needs numpy, pandas, scipy, scikit-learn, statsmodels and xgboost 3.2.0. xgboost also needs `libomp`, installed with Homebrew. `nbclient` is only needed to run the notebook from the terminal.
+**Environment:** Python ≥ 3.11 with the project packages (`uv sync`, or run `notebooks/0_setup.ipynb`). Needs numpy, pandas, scipy, scikit-learn, statsmodels and xgboost. On macOS, xgboost also needs `libomp`, installed with Homebrew. `nbclient` is only needed to run the notebook from the terminal.

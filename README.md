@@ -55,8 +55,8 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 | **Sea Around Us** (`fish_data.xlsx`) | Annual catch by species, Humboldt Current LME 13, 1950–2019 | Fish catch versus ENSO and drifter SST |
 
 **Key properties**
-- **Size:** the global `gdp1h` arrays are about 8 GB on disk (about 197 million readings). The regional extracts are 110–140 MB.
-- **Coverage:** Humboldt Current, 2001–2022. About 2.6 million readings from 695 drifters in the core box, with about 99% of readings between 2001 and 2022.
+- **Size:** the global `gdp1h` arrays are about 8 GB on disk (about 197 million readings). The regional extract is about 107 MB.
+- **Coverage:** Humboldt Current, 2001–2022. About 2.54 million readings from 659 drifters in the study box (89°W–65°W, 49°S–4°S), March 2001 – October 2022.
 - **Licence:** all sources are public research data from NOAA, Clouddrift and Sea Around Us.
 
 ## 📊 Insights and Data Analysis
@@ -77,7 +77,7 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 
 **Fish catch.** Strong coastal El Niños caused large anchoveta crashes (1983, 1998), and El Niño years usually bring lower catch over 1982–2019. Within the drifter years (2001–2019), the link is too weak to improve anchoveta catch forecasts beyond persistence.
 
-![Drifter SST anomaly with ICEN episodes](figures/ashita_humboldt_sst_icen_pm04.png)
+![Drifter SST anomaly with ICEN episodes](figures/humboldt_sst_icen_pm04.png)
 
 ## 📓 Data Description
 
@@ -87,8 +87,7 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 
 | Data product | Rows | Row meaning |
 |---|---|---|
-| `data/cache/forecast_obs.npz` | about 4.1 million | One hourly drifter reading in the forecasting box (94°W–65°W, 54°S–4°S) |
-| `data/cache/humboldt_obs.npz` | about 2.6 million | One hourly drifter reading in the exploratory box (89°W–65°W, 49°S–4°S), with velocity |
+| `data/drifter/humboldt_sst_readings.npz` | 2,537,111 | One hourly drifter reading in the study box (89°W–65°W, 49°S–4°S), with SST, velocity and the drifter's drogue-loss date |
 | `data/processed/sst_forecast_data*.csv` | 264 each | One calendar month, 2001–2022 |
 | `data/processed/icen_monthly_pm04.csv` | 309 | One calendar month, Jan 2001 – Sep 2026 |
 
@@ -97,7 +96,7 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 - **Sampling bias:** drifters are not spread evenly, and the south is much colder than the north, so raw averages are biased. Use the anomaly columns.
 - **Coverage gaps:** months with fewer than 10 grid cells or 5 drifters are flagged `low_coverage` and are left out of training and scoring.
 - **Drogue loss:** about half of the velocity readings come from drifters that have lost their drogue and are pushed by the wind. Velocity analysis uses drogued readings only.
-- **Faulty SST:** readings outside 5–35 °C (−2 to 35 °C at the cleaning stage) are dropped.
+- **Faulty SST:** readings outside 5–35 °C are dropped.
 
 ### Table 1: monthly SST anomaly files (`sst_forecast_data*.csv`)
 
@@ -121,19 +120,9 @@ ENSO is usually tracked with basin-wide indices such as the Oceanic Niño Index 
 
 ## 🏋️ Workflow
 
-To replicate the results, run `uv run python run_all.py` (see [Usage](#-usage)), or run the notebooks in `notebooks/` in the order listed below, starting with `0_setup.ipynb`. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
+To replicate the results, run the notebooks in `notebooks/` in the order listed below. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
 
-**Environment:** Python ≥ 3.11 with the packages in `pyproject.toml` (see [Usage](#-usage)).
-
-### 0️⃣ `0_setup.ipynb`: Install everything
-
-**What it does**
-- Installs every package at the exact versions in `requirements.txt` (exported from `uv.lock`).
-- Never installs into a base Python or base Anaconda: if it isn't already running in a virtual or conda environment, it creates `.venv/` in the repository and registers it as the Jupyter kernel **Christmas Casuals (.venv)**.
-- On macOS, installs `libomp` for xgboost with Homebrew if needed, then checks every package imports.
-
-**Outputs**
-- A ready project environment. If the notebook says so, switch notebooks 1 to 6 to the **Christmas Casuals (.venv)** kernel.
+**Environment:** Python ≥ 3.11 with the packages in `pyproject.toml` (see [Usage](#-usage)). If you don't use `uv`, run `0_setup.ipynb` once first: it creates a project environment, installs the pinned packages and registers the Jupyter kernel.
 
 ### 1️⃣ `1_enso_episodes.ipynb`: El Niño / La Niña episodes
 
@@ -148,13 +137,14 @@ To replicate the results, run `uv run python run_all.py` (see [Usage](#-usage)),
 ### 2️⃣ `2_data_cleaning.ipynb`: Drifter Data Cleaning
 
 **What it does**
+- Downloads the Clouddrift `gdp1h` arrays it needs into `data/drifter/gdp1h/` on the first run (needs internet and about 9.5 GB of free disk).
 - Opens the global `gdp1h` arrays without loading them into memory, and reads them in chunks of 2 million readings.
-- Keeps readings in the study box (94°W–65°W, 54°S–4°S) and period (2001–2022).
-- Converts SST from Kelvin to °C and drops faulty values (outside −2 to 35 °C).
-- Recovers each reading's drifter ID.
+- Keeps readings in the study box (89°W–65°W, 49°S–4°S) and period (2001–2022), with valid velocity.
+- Converts SST from Kelvin to °C and drops faulty values (outside 5 to 35 °C) and readings on the Atlantic side of the Andes (south of 40°S, east of 71°W).
+- Recovers each reading's drifter ID and saves each drifter's drogue-loss date for the velocity analysis.
 
 **Outputs**
-- `data/cache/forecast_obs.npz`: the regional extract, about 4.1 million readings. The first run takes a few minutes; later runs load the extract in seconds.
+- `data/drifter/humboldt_sst_readings.npz`: the regional extract, used by notebooks 3 and 4. The first run downloads the data and takes a while; later runs load the extract in seconds.
 
 ### 3️⃣ `3_sst_anomalies.ipynb`: SST Anomalies (Feature Engineering)
 
@@ -171,12 +161,12 @@ To replicate the results, run `uv run python run_all.py` (see [Usage](#-usage)),
 ### 4️⃣ `4_exploratory_analysis.ipynb`: Exploratory Analysis (RQ1)
 
 **What it does**
-- Builds its own extract with velocity (89°W–65°W, 49°S–4°S) and computes location-corrected SST anomalies.
+- Loads the regional extract from notebook 2 and computes location-corrected SST anomalies.
 - Compares the SST anomaly with ONI and Niño 1+2.
 - Measures the current response to El Niño and La Niña, using drogued drifters only.
 - Compares fish catch with coastal events and drifter SST, and tests anchoveta catch forecasts.
 
-It is independent of notebooks 1–3, so it can be run at any point.
+It needs the extract from notebook 2, plus `oni.ascii.txt`, `sstoi.indices` and `fish_data.xlsx` from `data/raw/`. It does not depend on notebooks 1 or 3.
 
 **Outputs**
 - The figures in `figures/` (SST vs ONI and Niño 1+2, forecast skill, fish catch, anchoveta models).
@@ -234,7 +224,7 @@ With only 23 events, we chose **statistical models over machine learning**: they
 - **Peak:** ARIMA + GAM beats persistence for El Niño, but it underestimates strong events. For 2015–16 it forecast +0.20 °C against an actual +1.00 °C. For La Niña, the typical past extreme works best.
 - **Next-month SST:** lagged SST holds most of the signal; ICEN and XGBoost add almost nothing.
 
-> **Improved versions and the presentation's figures.** Ashita's scripts in `src/` add simulated versions of both models. Simulating 1,000 noisy ICEN paths (**ARIMA sim**) cuts the duration error to **2.60 months** overall. Simulating whole SST paths (**GAM sim**) cuts the peak error to **0.355 °C** (El Niño) and **0.024 °C** (La Niña). The presentation's figures (2.57 / 1.83 months; 0.786 → 0.608 and 0.319 → 0.165 °C) come from an earlier episode rule (> +0.5 / < −0.7 °C). See [`docs/forecasting_results.md`](docs/forecasting_results.md) for all of these.
+> **Improved versions and the presentation's figures.** The standalone scripts in `src/` add simulated versions of both models. Simulating 1,000 noisy ICEN paths (**ARIMA sim**) cuts the duration error to **2.60 months** overall. Simulating whole SST paths (**GAM sim**) cuts the peak error to **0.355 °C** (El Niño) and **0.024 °C** (La Niña). The presentation's figures (2.57 / 1.83 months; 0.786 → 0.608 and 0.319 → 0.165 °C) come from an earlier episode rule (> +0.5 / < −0.7 °C). See [`docs/forecasting_results.md`](docs/forecasting_results.md) for all of these.
 
 ## 🚦 Project Status
 
@@ -244,13 +234,13 @@ With only 23 events, we chose **statistical models over machine learning**: they
 - El Niño / La Niña episodes defined from ICEN with the ±0.4 °C, 3-month rule.
 - SST and current responses to ENSO measured, and fish catch compared (RQ1).
 - Duration and peak-SST forecasts built and compared with baselines on the same episodes (RQ2, RQ3).
-- Notebook pipeline wired end to end: `1_enso_episodes` → `2_data_cleaning` → `3_sst_anomalies` → `4_exploratory_analysis` → `5_forecast_next_month_sst` → `6_forecast_duration_and_peak`.
+- Notebook pipeline wired end to end: `0_setup` → `1_enso_episodes` → `2_data_cleaning` → `3_sst_anomalies` → `4_exploratory_analysis` → `5_forecast_next_month_sst` → `6_forecast_duration_and_peak`.
 
 **Limitations**
 - **Very few events.** 23 episodes, with only 15 usable for duration and 5 for peak SST (2 of them El Niño). Some overfitting is unavoidable with events this rare, and no ranking is statistically secure.
 - **Real-time data.** The model needs current drifter observations, so delays in the data directly hurt accuracy. Fisheries need SST information weeks to a month ahead.
 - **Threshold choice matters.** Results change noticeably between the ±0.4 °C and the > +0.5 / < −0.7 °C rule.
-- **Reconstructed inputs.** Two of the three SST forecast files were rebuilt by re-running the preprocessing with later baseline years.
+- **Reconstructed inputs.** The 2001–2013 and 2001–2017 SST baselines were rebuilt by re-running the preprocessing with later cut-off years, chosen to match the forecast periods in notebook 6.
 - **Catch is not fish.** Quotas and season closures affect catch as well as the ocean.
 
 **Next steps**
@@ -262,34 +252,23 @@ With only 23 events, we chose **statistical models over machine learning**: they
 
 ## 🏭 Usage
 
-### ⚡ Quick start (run everything)
-
-```bash
-git clone https://github.com/Ashi0117/Christmas-Casuals.git
-cd Christmas-Casuals
-uv sync                          # installs Python 3.11 and every package in pyproject.toml
-uv run python run_all.py         # runs notebooks 0 to 6 in order
-```
-
-**Without `uv`:** open `notebooks/0_setup.ipynb` in Jupyter or VS Code with any Python 3.11+ and run it. It creates the project environment and installs everything (see [0️⃣](#0️⃣-0_setupipynb-install-everything)). Then run notebooks 1 to 6 in order on the **Christmas Casuals (.venv)** kernel. Plain `pip install -r requirements.txt` inside your own virtual environment also works.
-
-`run_all.py` executes each notebook top to bottom and saves its outputs, figures and CSVs. To run only some notebooks, pass their numbers, e.g. `uv run python run_all.py 3 5`. You can also open the notebooks in Jupyter or VS Code (kernel: the project's `.venv`) and run them in order.
-
-The first run needs an internet connection: notebook 2 downloads the Clouddrift drifter arrays (about 8 GB of disk) and builds the regional extracts, which takes a while. Later runs reuse `data/cache/`; once the arrays are downloaded, the six notebooks take about 3 minutes in total. The arrays are read in chunks (peak memory about 1.2 GB), so the whole pipeline runs on an 8 GB laptop.
-
 ### 📦 Environment
 
-The project uses Python ≥ 3.11 and [`uv`](https://docs.astral.sh/uv/). The key packages are numpy, pandas, scipy, scikit-learn, statsmodels, xgboost, matplotlib, openpyxl and clouddrift; cartopy is only used for the study-region map, and nbconvert/ipykernel run the notebooks.
+The project uses Python ≥ 3.11 and `uv`. The key packages are numpy, pandas, scipy, scikit-learn, statsmodels, xgboost, matplotlib and openpyxl. You need clouddrift only for the first download and cartopy only for the study-region map.
+
+```bash
+uv sync
+```
 
 On macOS, xgboost also needs `brew install libomp`.
 
 ### Drifter data
 
-The drifter data is too large for the repository (about 8 GB), so `data/cache/` is not uploaded. It is created on the first run: `2_data_cleaning.ipynb` and `4_exploratory_analysis.ipynb` (and `src/data_cleaning.py`) download any missing Clouddrift `gdp1h` arrays into `data/cache/` as `.npy` files, then save the smaller regional extracts (`forecast_obs.npz`, `humboldt_obs.npz`). Later runs reuse the cached files. The download needs `clouddrift` and an internet connection.
+The drifter data isn't in git. Run `2_data_cleaning.ipynb` first: it downloads the Clouddrift `gdp1h` arrays (about 8 GB) into `data/drifter/gdp1h/` and writes the regional extract to `data/drifter/`. Notebooks 3 and 4 read only that extract, so once it exists the `gdp1h/` arrays are needed only to rebuild it. If a download is interrupted, rerun the notebook and it picks up the missing arrays.
 
 ### Standalone scripts
 
-Ashita's original scripts are in `src/`. They include the extra hazard, ARIMA sim, GAM sim and blend models, and run from any folder:
+Standalone Python versions of the pipeline are in `src/`. The forecasting scripts include the extra hazard, ARIMA sim, GAM sim and blend models, and all scripts run from any folder:
 
 ```bash
 python src/relabel_icen.py                  # ICEN episodes
@@ -303,11 +282,9 @@ The three forecasting scripts only need the CSVs in `data/processed/`.
 ## 🗂️ Repository Structure
 
 ```
-Christmas-Casuals/
+Christmas-Casuals-final/
 ├── README.md
-├── run_all.py                 ← runs notebooks 0 to 6 in order
-├── pyproject.toml / uv.lock / .python-version
-├── requirements.txt           pinned versions (exported from uv.lock) for pip users
+├── pyproject.toml / uv.lock / requirements.txt / .python-version
 ├── notebooks/                 ← run in order, 0 to 6
 │   ├── 0_setup.ipynb
 │   ├── 1_enso_episodes.ipynb
@@ -317,9 +294,9 @@ Christmas-Casuals/
 │   ├── 5_forecast_next_month_sst.ipynb
 │   ├── 6_forecast_duration_and_peak.ipynb
 │   └── archive/               the earlier combined notebooks
-├── src/                       ← Ashita's standalone scripts
+├── src/                       ← standalone scripts (forecasting, plotting, preprocessing)
 ├── data/
-│   ├── cache/                 created on first run (downloaded drifter arrays and extracts; not in git)
+│   ├── drifter/               downloaded by notebook 2, not in git (gdp1h/ arrays and regional extracts)
 │   ├── raw/                   ICEN, ONI, Niño 1+2, fish catch
 │   └── processed/             relabelled ICEN, monthly SST anomaly files
 ├── figures/                   all figures (archive_oni/ holds early ONI-based figures)

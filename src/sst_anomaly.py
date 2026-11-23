@@ -1,14 +1,8 @@
 import numpy as np
 import pandas as pd
-import subprocess
-import sys
 from pathlib import Path
 
-CACHE = Path(__file__).resolve().parents[1] / "data" / "cache"
-
-# valid_sst.npy and the gdp1h arrays come from data_cleaning.py (which downloads them)
-if not (CACHE / "valid_sst.npy").exists():
-    subprocess.run([sys.executable, str(Path(__file__).with_name("data_cleaning.py"))], check=True)
+CACHE = Path(__file__).resolve().parents[1] / "data" / "drifter" / "gdp1h"  # shared with the notebooks; downloaded by src/data_cleaning.py or notebook 2
 
 # --------------------------------------------------
 # LOAD CLEANED DATA
@@ -138,4 +132,4 @@ df.to_csv(
     index=False
 )
 
-print("\nSaved: data/cache/sst_anomaly.csv")
+print(f"\nSaved: {CACHE / 'sst_anomaly.csv'}")

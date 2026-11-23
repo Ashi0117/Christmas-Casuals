@@ -1,16 +1,10 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.patches import Patch
-import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]   # project root
 DATA = ROOT / "data"
-
-# sst_monthly_anomalies.csv is written by sst_monthly_anomalies.py
-if not (DATA / "processed" / "sst_monthly_anomalies.csv").exists():
-    subprocess.run([sys.executable, str(Path(__file__).with_name("sst_monthly_anomalies.py"))], check=True)
 
 # Coastal El Niño / La Niña thresholds (°C); same rule as relabel_icen.py
 ENSO_WARM = 0.4
