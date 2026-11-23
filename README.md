@@ -321,6 +321,8 @@ We then attempted to model the catch numbers for anchoveta using an ARIMA model.
 ## Findings
 <img width="2200" height="760" alt="image" src="https://github.com/user-attachments/assets/17de79f3-75d8-4d12-b9b0-96f57593c7f8" />
 
+Figure 7: Forecasting skill vs climatology for persistence and baseline
+
 Our findings cover two forecasting targets. We want to estimate the remaining duration of an event and the strongest SST anomaly occurring after the forecast date which is the peak for an ENSO event. First, for episode duration, we compared ARIMA against historical median and linear regression as benchmarks and we evaluated all three on the same episodes. If we consider La Nina events, ARIMA achieved the lowest mean absolute error at 2.57 months compared with 2.67 months for linear regression and 3.07 months for the historical median. ARIMA also had the lowest RMSE which suggests fewer large errors overall. For El Nino, ARIMA performed as equally good as the historical median and they both achieved a mean absolute error of 1.83 months. However, linear regression had the lowest RMSE. Therefore, we can see that ARIMA was not consistently the strongest duration model across both phases.
 
 Next, we asked: within the remaining event, what is the strongest SST anomaly we can expect? For the remaining SST extreme, we used ARIMA’s predicted duration to define the forecast window and then we applied GAM to forecast monthly drifter SST anomalies. We selected the warmest predicted anomaly for El Niño and the coldest for La Niña.
