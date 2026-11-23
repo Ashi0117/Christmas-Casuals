@@ -1,6 +1,4 @@
 # DATA3001 Group 8 README
-## 🔧 Technical Documentation
-
 ### 📑 Table of Contents
 
 **Technical Documentation**
@@ -26,7 +24,7 @@
 - [Future Work](#future-work)
 - [References](#references)
 - [AI Statements](#ai-statements)
-
+## 🔧 Technical Documentation
 ### 🔍 Research Questions
 
 We study how El Niño and La Niña change sea surface temperature (SST) and surface currents in the Humboldt Current off Peru and Chile. We then ask whether knowing that one of these events is under way improves forecasts:
@@ -303,7 +301,7 @@ We selected ARIMA as our prediction model for duration episode and therefore the
 
 Our two benchmarks here were persistence and historical median. The former used the regional SST anomaly in the forecast month as the predicted value. The latter used the median of the observed remaining extremes from earlier episodes whose end dates were known.
 
-Our final model was a generalised additive model (GAM). A strong coastal El Niño may affect SST differently from a weak one. Therefore, the non-linearity of a GAM could show how the effect of ICEN changes across its range while still accounting for recent SST anomalies and season. Using the information available in the forecast month, we fitted separate GAMs to predict SST anomalies over different lead time periods and up to the episode end predicted by ARIMA. Each model used the two most recent monthly regional SST anomalies, the seasonal factor of the target month and a smooth effect of the latest ICEN value. We then selected the highest or lowest value of predicted monthly SST anomaly depending on the phase. 
+Our final model was a generalised additive model (GAM). A strong coastal El Niño may affect SST differently from a weak one. Therefore, the non-linearity of a GAM could show how the effect of ICEN changes across its range while still accounting for recent SST anomalies and season. Using the information available in the forecast month, we fitted separate GAMs to predict SST anomalies over different lead time periods using historical training pairs and up to the episode end predicted by ARIMA. Each model used the two most recent monthly regional SST anomalies, seasonal factor of the target month and a smooth effect of the latest ICEN value. We then selected the highest or lowest value of predicted monthly SST anomaly depending on the phase. 
 
 For evaluation, we calculated the observed extreme measured from the month after forecast to the actual end of the episode. We included only episodes with usable SST data for every month in that period. As for episode duration, we used MAE and RMSE in °C for each ENSO phase. ARIMA + GAM and persistence were compared on 5 episodes consisting of 2 El Niño and 3 La Niña. The historical median was performed on 4 episodes only.
 
@@ -334,12 +332,12 @@ Our findings cover two forecasting targets, the remaining duration of an event a
 
 Next, we asked: within the remaining event, what is the strongest SST anomaly we can expect? For the remaining SST extreme, we used ARIMA’s predicted duration to define the forecast window and then we applied GAM to forecast monthly drifter SST anomalies. We selected the warmest predicted anomaly for El Niño and the coldest for La Niña.
 
-| Phase | Historical Median | Regression | ARIMA |
+| Phase | Historical Median | Persistence | ARIMA |
 | --- | --- | --- | --- |
-| El Niño (n = 6) | 1.83/3.76 | 1.85/2.86 | 1.83/3.39 |
-| La Niña (n = 7) | 3.07/4.00 | 2.67/3.48 | 2.57/3.12 |
+| El Niño (n = 1) | 0.299/0.299 | 0.786/0.786 | 0.608/0.608 |
+| La Niña (n = 3) | 0.390/0.428 | 0.319/0.350 | 0.165/0.183 |
 
-Figure 8: Model Performance for Regression and ARIMA - Remaining SST Extreme - MAE / RMSE - °C  
+Figure 8: Model Performance for ARIMA + GAM - Remaining SST Extreme - MAE / RMSE - °C  
 
 As shown in Figure 8, compared with persistence, for El Niño, the average absolute error fell from 0.786 to 0.608 degrees Celsius, an improvement of around 23%. For La Niña, it fell from 0.319 to 0.165 degrees, a reduction of almost half. Thus showing that the model was more effective than carrying the current value forward. 
 
