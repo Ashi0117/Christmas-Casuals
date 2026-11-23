@@ -21,10 +21,14 @@ El Niño and La Niña are two opposite phases of ENSO, which affect ocean temper
 Under normal conditions, trade winds push warm surface water westward. This allows colder, nutrient-rich water to rise near the coast of South America, in a process called upwelling. During El Niño, these trade winds weaken, so less cold water reaches the surface and the eastern Pacific becomes warmer. During La Niña, the trade winds become stronger, bringing more cold water to the surface and creating cooler conditions.
 These changes can affect marine ecosystems and fisheries, especially in the Humboldt Current region, which is the focus of our study.
 
+To define an El Niño or La Niña event, we initially used NOAA's Oceanic Niño Index (ONI for short), which takes SST readings from a pre-defined region named Niño 3.4. We followed NOAA's definition of El Niño or La Niña as a shift of ±0.5°C in the corresponding direction. These figures can be found at https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/oni/v5/.
+
 
 ## Region Analysis
 <img width="3200" height="1800" alt="image" src="https://github.com/user-attachments/assets/af329a58-1aa7-4b30-98c8-c7457a92b6c8" />
 
+
+Our group was fascinated by El Niño and La Niña and we wanted to investigate whether the impact these phenomena would have on drifters. We also wanted to choose a region that had a tangible economic impact to aid our business case. The Humboldt Current checked both of these requirements, as it is close to the Niño 3.4 region and provides 20-30% of the world's marine catch. We defined our region as shown in the image above, with coordinates 89-65°W and 4-49°S.
 
 The Humboldt Current flows northward along the west coast of South America, past Chile and Peru. As shown on the map on the left, upwelling brings cold, nutrient-rich seawater to the surface, providing ideal conditions for marine life and making this region extremely rich in fishery resources. The chart on the right shows global marine catch volumes, including the Southeast Pacific—labeled as “Area 87”—highlighting the region’s importance to the global fishing industry.
 
