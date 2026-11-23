@@ -96,8 +96,12 @@ For evaluation, we calculated the observed extreme measured from the month after
 ## Fish
 <img width="2263" height="3057" alt="image" src="https://github.com/user-attachments/assets/bd0e9ecf-d9db-47a6-9ce8-53d7b60c17e4" />
 
-We attempted to model fishing numbers using our ARIMA model, essentially 
+We wanted to link fishing data to our model in order to potentially quantify the effect of El Niño and La Niña on fisheries in the Humboldt Current. We obtained data from Sea Around Us, whose website has been linked in our references. They provided catch data for each individual species in the Humboldt Current from the 1980s to 2019, however we only used Peruvian anchoveta data. Peruvian anchoveta is the most caught fish in the world and typically accounts for more than 80% of the catch in the Humboldt Current, hence we used its catch numbers as our primary fish metric.
 
+Our first attempt to model catch data and El Niño and La Niña was somewhat uninformative, as shown above in the second graph. We expected to see a negative correlation between SST and anchoveta numbers, as a higher SST would create less favourable conditions for fish due to reduced upwelling. This was somewhat observed, as the two sets of data returned a negative correlation coefficient of -0.13. During the extremely strong El Niño in 2016, anchoveta numbers went down more than one standard deviation, which supported our hypothesis. However, other El Niño and La Niña did not get picked up by the data. Other species shown in the graph provided similarly uncertain results.
+
+<img width="2263" height="1019" alt="image" src="https://github.com/user-attachments/assets/ce2525b2-78e0-4246-b4fe-d6b1be0b4f8a" />
+We then attempted to model the catch numbers for anchoveta using an ARIMA model.
 
 ## Findings
 
@@ -112,6 +116,9 @@ Given more time, we would have investigated drifters in other regions and how th
 The GDP dataset also contained 6-hourly observations from 2022 to 2025, however we only used hourly data from 2001 to 2022. We did not initially anticipate needing this extra data, as we failed to consider that number of El Niño and La Niña events was more important than number of individual drifter observations. This dataset would have given us an extra El Niño event from May 2023 to June 2024, which would have been quite valuable. Changing our model to incorporate 6-hourly data would have required restructuring our data and models, which we ran out of time to do.
 
 ## References
+Put this into ChatGPT later for proper referencing
+https://www.seaaroundus.org/
+https://www.aoml.noaa.gov/
 
 ## AI Statements
 Specific examples of where AI tools helped and where they were wrong.
