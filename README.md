@@ -36,6 +36,7 @@ We study how El Niño and La Niña change sea surface temperature (SST) and surf
 | **RQ1** | How large are the anomalous shifts in surface velocity (u′, v′) and SST across the Humboldt Current during El Niño and La Niña? |
 | **RQ2** | Once an El Niño or La Niña is confirmed, can we predict how long it will last? |
 | **RQ3** | Can we predict its effect on SST: the most extreme SST anomaly still to come? |
+| RQ4        | Can we forcecast the impact an an El Niño or La Niña has on fishing                                                                               |
 
 ### 📓 Data Description
 
@@ -94,18 +95,6 @@ On macOS, xgboost also needs `brew install libomp`.
 
 The drifter data isn't in git. Run `2_data_cleaning.ipynb` first: it downloads the Clouddrift `gdp1h` arrays (about 8 GB) into `data/drifter/gdp1h/` and writes the regional extract to `data/drifter/`. Notebooks 3 and 4 read only that extract, so once it exists the `gdp1h/` arrays are needed only to rebuild it. If a download is interrupted, rerun the notebook and it picks up the missing arrays.
 
-#### Standalone scripts
-
-Standalone Python versions of the pipeline are in `src/`. The forecasting scripts include the extra hazard, ARIMA sim, GAM sim and blend models, and all scripts run from any folder:
-
-```bash
-python src/relabel_icen.py                  # ICEN episodes
-python src/forecast_monthly_sst.py          # next-month SST
-python src/forecast_episode_duration.py     # duration (RQ2), about 5 seconds
-python src/forecast_peak_sst_arima_gam.py   # peak SST (RQ3)
-```
-
-The three forecasting scripts only need the CSVs in `data/processed/`.
 
 ### 🔄 Workflow
 
@@ -201,7 +190,6 @@ Raw drifter readings → regional extract → location-corrected SST anomalies �
 ```
 Christmas-Casuals/
 ├── README.md
-├── main_README.md             ← this file: technical documentation and final report
 ├── pyproject.toml / uv.lock / requirements.txt / .python-version
 ├── notebooks/                 ← run in order, 0 to 6
 │   ├── 0_setup.ipynb
@@ -210,23 +198,13 @@ Christmas-Casuals/
 │   ├── 3_sst_anomalies.ipynb
 │   ├── 4_exploratory_analysis.ipynb
 │   ├── 5_forecast_next_month_sst.ipynb
-│   ├── 6_forecast_duration_and_peak.ipynb
-│   └── archive/               the earlier combined notebooks
-├── src/                       ← standalone scripts (forecasting, plotting, preprocessing)
+│   └── 6_forecast_duration_and_peak.ipynb
 ├── data/
 │   ├── drifter/               downloaded by notebook 2, not in git (gdp1h/ arrays and regional extract)
 │   ├── raw/                   ICEN, ONI, Niño 1+2, fish catch
 │   └── processed/             relabelled ICEN, monthly SST anomaly files
-├── figures/                   all figures (archive_oni/ holds early ONI-based figures)
-└── docs/
-    ├── 01_exploratory_analysis_explained.md
-    ├── 02_forecasting_pipeline_explained.md
-    ├── forecasting_results.md
-    └── presentation_speech.docx
+└── figures/                   all figures (archive_oni/ holds early ONI-based figures)
 ```
-
-The two `docs/*_explained.md` walkthroughs describe the earlier combined notebooks in `notebooks/archive/`: `01` matches notebook 4, and `02` covers notebooks 1–3, 5 and 6. `docs/forecasting_results.md` documents the standalone scripts in `src/`.
-
 
 
 
