@@ -1,4 +1,4 @@
-# DATA3001 Group 8 README
+<img width="2263" height="1019" alt="image" src="https://github.com/user-attachments/assets/5e952167-12ce-4f49-b2ac-2a22aa8b0315" /># DATA3001 Group 8 README
 ## Technical Documentation
 
 install a b c
@@ -17,8 +17,7 @@ We found a b and c
 
 ## Brief Overview of El Nino and La Nina
 
-El Niño and La Niña are two opposite phases of ENSO, which affect ocean temperatures across the Pacific. 
-Under normal conditions, trade winds push warm surface water westward. This allows colder, nutrient-rich water to rise near the coast of South America, in a process called upwelling. During El Niño, these trade winds weaken, so less cold water reaches the surface and the eastern Pacific becomes warmer. During La Niña, the trade winds become stronger, bringing more cold water to the surface and creating cooler conditions.
+El Niño and La Niña are two opposite phases of the El Niño Southern Oscillation, a weather phenomenon which affect ocean temperatures across the Pacific. Under normal conditions, trade winds push warm surface water westward, allowing colder, nutrient-rich water to rise near the coast of South America, in a process called upwelling. During El Niño, these trade winds weaken, so less cold water reaches the surface and the eastern Pacific becomes warmer. During La Niña, the trade winds become stronger, bringing more cold water to the surface and creating cooler conditions.
 These changes can affect marine ecosystems and fisheries, especially in the Humboldt Current region, which is the focus of our study.
 
 To define an El Niño or La Niña event, we initially used NOAA's Oceanic Niño Index (ONI for short), which takes SST readings from a pre-defined region named Niño 3.4. We followed NOAA's definition of El Niño or La Niña as a shift of ±0.5°C in the corresponding direction. These figures can be found at https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/oni/v5/.
@@ -94,11 +93,14 @@ Our final model was a generalised additive model (GAM). A strong coastal El Niñ
 For evaluation, we calculated the observed extreme measured from the month after forecast to the actual end of the episode. We included only episodes with usable SST data for every month in that period. As for episode duration, we used MAE and RMSE in °C for each ENSO phase. ARIMA + GAM and persistence were compared on 5 episodes consisting of 2 El Niño and 3 La Niña. The historical median was performed on 4 episodes only.
 
 ## Fish
+<img width="2263" height="1019" alt="image" src="https://github.com/user-attachments/assets/4f1fc5f3-5f22-451e-b812-1c842160cb99" />
+We attempted to model fishing numbers using our ARIMA model, essentially 
+
 
 ## Findings
 
 ## Limitations
-Firstly, our modelling is heavily limited by the few La Nina and El Nino events we have to work with. In total, we have 23 events, however we could only test peak forecasts on 5 of these. While we've done what we can to avoid overfitting, this will inevitably occur due to the rarity of large-scale weather events.
+The primary limitation to our project was the few El Niño and La Niña events we had to work with. As previously mentioned, we had 
 
 Secondly, the model's need for real-time data means that any delay in drifter observations will heavily limit the model's effectiveness and accuracy. If we apply this model to a real life context, fisheries need information about SST a few weeks to a month in advance to properly evaluate their business decisions.
 
