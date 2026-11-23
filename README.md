@@ -323,15 +323,25 @@ Figure 6: Modelling anchoveta catch data
 We then attempted to model the catch numbers for anchoveta using an ARIMA model. We compared it to two baseline persistent models, which are shown above, one of them including SST and the other without. Our model performed marginally better than the persistent models, however, there was very little correlation once again. Other attempts at modelling produced similar results, showing little correlation between SST and fish catch data. Hence, we were not able to successfully model or tangibly quantify the effect of El Niño and La Niña on fishing activity in the Humboldt Current.
 
 ## Findings
-<img width="2200" height="760" alt="image" src="https://github.com/user-attachments/assets/17de79f3-75d8-4d12-b9b0-96f57593c7f8" />
+| Phase | Historical Median | Regression | ARIMA |
+| --- | --- | --- | --- |
+| El Niño (n = 6) | 1.83/3.76 | 1.85/2.86 | 1.83/3.39 |
+| La Niña (n = 7) | 3.07/4.00 | 2.67/3.48 | 2.57/3.12 |
 
-Figure 7: Forecasting skill vs climatology for persistence and baseline
+Figure 7: Model Performance for Regression and ARIMA - Remaining Duration - MAE / RMSE - Months
 
-Our findings cover two forecasting targets. We want to estimate the remaining duration of an event and the strongest SST anomaly occurring after the forecast date which is the peak for an ENSO event. First, for episode duration, we compared ARIMA against historical median and linear regression as benchmarks and we evaluated all three on the same episodes. If we consider La Nina events, ARIMA achieved the lowest mean absolute error at 2.57 months compared with 2.67 months for linear regression and 3.07 months for the historical median. ARIMA also had the lowest RMSE which suggests fewer large errors overall. For El Nino, ARIMA performed as equally good as the historical median and they both achieved a mean absolute error of 1.83 months. However, linear regression had the lowest RMSE. Therefore, we can see that ARIMA was not consistently the strongest duration model across both phases.
+Our findings cover two forecasting targets, the remaining duration of an event and the strongest SST anomaly occurring after the forecast date which is the peak for an ENSO event. First, for episode duration our results are in, we compared ARIMA against historical median and linear regression as benchmarks and we evaluated all three on the same episodes, as shown in Figure 7. If we consider La Nina events, ARIMA achieved the lowest mean absolute error at 2.57 months compared with 2.67 months for linear regression and 3.07 months for the historical median. ARIMA also had the lowest RMSE which suggests fewer large errors overall. For El Nino, ARIMA performed as equally good as the historical median and they both achieved a mean absolute error of 1.83 months. However, linear regression had the lowest RMSE. Therefore, we can see that ARIMA was not consistently the strongest duration model across both phases.
 
 Next, we asked: within the remaining event, what is the strongest SST anomaly we can expect? For the remaining SST extreme, we used ARIMA’s predicted duration to define the forecast window and then we applied GAM to forecast monthly drifter SST anomalies. We selected the warmest predicted anomaly for El Niño and the coldest for La Niña.
 
-Compared with persistence, for El Niño, the average absolute error fell from 0.786 to 0.608 degrees Celsius, an improvement of around 23%. For La Niña, it fell from 0.319 to 0.165 degrees, a reduction of almost half. Thus showing that the model was more effective than carrying the current value forward. 
+| Phase | Historical Median | Regression | ARIMA |
+| --- | --- | --- | --- |
+| El Niño (n = 6) | 1.83/3.76 | 1.85/2.86 | 1.83/3.39 |
+| La Niña (n = 7) | 3.07/4.00 | 2.67/3.48 | 2.57/3.12 |
+
+Figure 8: Model Performance for Regression and ARIMA - Remaining SST Extreme - MAE / RMSE - °C  
+
+As shown in Figure 8, compared with persistence, for El Niño, the average absolute error fell from 0.786 to 0.608 degrees Celsius, an improvement of around 23%. For La Niña, it fell from 0.319 to 0.165 degrees, a reduction of almost half. Thus showing that the model was more effective than carrying the current value forward. 
 
 However, the historical median performed best for the single El Niño event available for the three-model comparison. For La Niña, ARIMA plus GAM outperformed both benchmarks. So, the more complex model offered a clearer advantage for La Niña, while a simple historical benchmark remained valuable for El Niño.
 The evaluation included only one El Nino and three La Nina events with complete SST observations so these comparisons describe a small set of events. Therefore, limiting how broadly we can generalise the differences for peak SST.  
