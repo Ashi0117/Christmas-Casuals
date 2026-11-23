@@ -94,7 +94,8 @@ Our final model was a generalised additive model (GAM). A strong coastal El Niñ
 For evaluation, we calculated the observed extreme measured from the month after forecast to the actual end of the episode. We included only episodes with usable SST data for every month in that period. As for episode duration, we used MAE and RMSE in °C for each ENSO phase. ARIMA + GAM and persistence were compared on 5 episodes consisting of 2 El Niño and 3 La Niña. The historical median was performed on 4 episodes only.
 
 ## Fish
-<img width="2263" height="1019" alt="image" src="https://github.com/user-attachments/assets/4f1fc5f3-5f22-451e-b812-1c842160cb99" />
+<img width="2263" height="3057" alt="image" src="https://github.com/user-attachments/assets/bd0e9ecf-d9db-47a6-9ce8-53d7b60c17e4" />
+
 We attempted to model fishing numbers using our ARIMA model, essentially 
 
 
