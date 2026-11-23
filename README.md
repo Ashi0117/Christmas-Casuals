@@ -56,9 +56,17 @@ While exploring SST patterns, we noticed that any modelling we tried was largely
 ## Coastal ENSO Indicator
 We identified coastal El Niño and La Niña episodes using the Coastal El Niño Index (ICEN). Since, our study focuses on the Humboldt Current, ICEN was more appropriate as its geographic focus allows us to identify warm or cold events more accurately than ENSO conditions in the central equatorial Pacific where timing and intensity are slightly different because of time lag. Like Oceanic Nino Index (ONI), ICEN calculates the three-month moving of sea surface temperature anomalies in the Niño 1+2 region instead of Niño 3.4 region. 
 
-An El Niño episode required ICEN to be greater to or equal to +0.4°C for at least three consecutive months while a La Niña episode required ICEN to be less than or equal to -0.4°C. We considered the third month as a confirmation and issued the duration forecast two months later to account for the assumed publication delay. 
+As detailed in 1_enso_episodes.ipynb, an El Niño episode required ICEN to be greater to or equal to +0.4°C for at least three consecutive months while a La Niña episode required ICEN to be less than or equal to -0.4°C. We considered the third month as a confirmation and issued the duration forecast two months later to account for the assumed publication delay. 
 
-## Episode Duration
+## Data Cleaning and Preprocessing
+Here, we refer to the notebook 2_data_cleaning.ipynb. For our study, we used hourly drifter sea surface temperature (SST) which were converted from Kelvin to degrees Celsius. We filtered extreme values and outliers using a range of -2 to 35°C.
+
+As explained in feature engineering, each SST was changed to account for ocean conditions, latitude and longitude. Then, we calculated SST anomaly as the observed temperature minus the expected temperature at a location and time of the year. Months represented by fewer than 10 cells or fewer than 5 drifters were flagged as having low coverage and were not used.
+
+## Forecasting Models 
+The episode-duration and peak forecasting models are implemented in notebook 6_forecast_duration_and_peak.ipynb.
+
+### Remaining Episode Duration
 We compared five forecasting methods using ICEN and historical episode outcomes, namely:
 1. Historical Median
 2. Linear Regression
@@ -66,13 +74,22 @@ We compared five forecasting methods using ICEN and historical episode outcomes,
 4. Exponential Smoothing
 5. Bayesian Structural Time Series
 
-The historical median used the median remaining duration of earlier episodes of the same phase whose end dates were known. Linear regression used the ICEN value in the third qualifying month to predict remaining duration. ARIMA(1,0,1) forecasted a single monthly ICEN path over 36 months and identified the first month in which the predicted index was no longer in the episode's threshold range. Exponential smoothing simulated future monthly ICEN paths and used the median first threshold-crossing time across the simulations. Lastly, BTST simulated monthly ICEN paths from a bayesian time-series model and used the same median crossing rule as ETS. 
+We used two benchmarks: the historical median and linear regression. The historical median used the median remaining duration of earlier episodes of the same phase whose end dates were known. Linear regression used the ICEN value in the third qualifying month to predict remaining duration. 
 
-We compared the five methods on 15 episodes with a duration estimate from every model, including seven El Niño and eight La Niña episodes. We evaluated accuracy using mean absolute error (MAE) and root mean squared error (RMSE), both in months, and reported results overall and by ENSO phase.
+We then evaluated three time-series models that forecast future ICEN values and predict the episode end. ARIMA(1,0,1) forecasted a single monthly ICEN path over 36 months and identified the first month in which the predicted index was no longer in the episode's threshold range. The range was defined as the first month in which the predicted ICEN fell below +0.4°C for an El Niño while it was greater than -0.4°C for a La Niña. Exponential smoothing simulated future monthly ICEN paths and used the median first threshold-crossing time across the simulations. Lastly, Bayesian structural time series model simulated monthly ICEN paths from a bayesian time-series model and used the same median crossing rule as ETS. 
 
+We compared the five methods on 15 episodes with a duration estimate from every model, including seven El Niño and eight La Niña episodes. We evaluated accuracy using mean absolute error (MAE) and root mean squared error (RMSE) in months, and reported results overall and by ENSO phase.
 
+### Remaining Peak SST anomaly
+We forecast the most extreme monthly regional SST anomaly after the forecast month and before the coastal ENSO episode ended. We defined the extreme as the highest monthly anomaly for El Niño and the lowest monthly anomaly for La Niña.
 
-## Peak
+We selected ARIMA as our prediction model for duration episode and therefore the end date predicted by ARIMA determined how many months aheads to forecast SST. When ARIMA estimated zero months remaining, we did not predict any SST anomaly.
+
+Our two benchmarks here were persistence and historical median. The former used the regional SST anomaly in the forecast month as the predicted value. The latter used the medium of the observed remaining extremes from earlier episodes whose end dates were known.
+
+Our final model was a generalised additive model (GAM). A strong coastal El Niño may affect SST differently from a weak one. Therefore, the non-linearity of a GAM could show how the effect of ICEN changes across its range while still accounting for recent SST anomalies and season. Using the information available in the forecast month, we fitted separate GAMs to predict SST anomalies over different periods and up to the episode end predicted by ARIMA. Each model used the two most recent monthly regional SST anomalies, seasonal factor of the target month and a smooth effect of the latest ICEN value. We then selected the highest or lowest value of predicted monthly SST anomaly depending on the phase. 
+
+For evaluation, we calculated the observed extreme measured from the month after forecast to the actual end of the episode. We included only episodes with usable SST data for every month in that period. As for episode duration, we used MAE and RMSE in °C for each ENSO phase. ARIMA + GAM and persistence were compared on 5 episodes consisting of 2 El Niño and 3 La Niña. The historical median was performed on 4 episodes only.
 
 ## Fish
 
