@@ -1,8 +1,232 @@
 # DATA3001 Group 8 README
-## Technical Documentation
+## 🔧 Technical Documentation
 
-install a b c
-explain what the files do
+### 📑 Table of Contents
+
+**Technical Documentation**
+- [Research Questions](#-research-questions)
+- [Data Description](#-data-description)
+- [Usage](#-usage)
+- [Workflow](#-workflow)
+- [Repository Structure](#-repository-structure)
+
+**Final Report**
+- [Introduction](#introduction)
+- [Exec Summary](#exec-summary)
+- [Brief Overview of El Nino and La Nina](#brief-overview-of-el-nino-and-la-nina)
+- [Region Analysis](#region-analysis)
+- [Initial Data Analysis](#initial-data-analysis)
+- [Feature Engineering](#feature-engineering)
+- [Coastal ENSO Indicator](#coastal-enso-indicator)
+- [Data Cleaning and Preprocessing](#data-cleaning-and-preprocessing)
+- [Forecasting Models](#forecasting-models)
+- [Fish](#fish)
+- [Findings](#findings)
+- [Limitations](#limitations)
+- [Future Work](#future-work)
+- [References](#references)
+- [AI Statements](#ai-statements)
+
+### 🔍 Research Questions
+
+We study how El Niño and La Niña change sea surface temperature (SST) and surface currents in the Humboldt Current off Peru and Chile. We then ask whether knowing that one of these events is under way improves forecasts:
+
+| | Research question |
+|---|---|
+| **RQ1** | How large are the anomalous shifts in surface velocity (u′, v′) and SST across the Humboldt Current during El Niño and La Niña? |
+| **RQ2** | Once an El Niño or La Niña is confirmed, can we predict how long it will last? |
+| **RQ3** | Can we predict its effect on SST: the most extreme SST anomaly still to come? |
+
+### 📓 Data Description
+
+**Episode rule.** A coastal **El Niño** is ICEN ≥ +0.4 °C for at least 3 consecutive months, and a coastal **La Niña** is ICEN ≤ −0.4 °C for at least 3 consecutive months. This gives **23 episodes in 2001–2022: 10 El Niño and 13 La Niña.**
+
+#### Size & Shape
+
+| Data product | Rows | Row meaning |
+|---|---|---|
+| `data/drifter/humboldt_sst_readings.npz` | 2,537,111 | One hourly drifter reading in the study box (89°W–65°W, 49°S–4°S), with SST, velocity and the drifter's drogue-loss date |
+| `data/processed/sst_forecast_data*.csv` | 264 each | One calendar month, 2001–2022 |
+| `data/processed/icen_monthly_pm04.csv` | 309 | One calendar month, Jan 2001 – Sep 2026 |
+
+#### Quality Notes
+
+- **Sampling bias:** drifters are not spread evenly, and the south is much colder than the north, so raw averages are biased. Use the anomaly columns.
+- **Coverage gaps:** months with fewer than 10 grid cells or 5 drifters are flagged `low_coverage` and are left out of training and scoring.
+- **Drogue loss:** about half of the velocity readings come from drifters that have lost their drogue and are pushed by the wind. Velocity analysis uses drogued readings only.
+- **Faulty SST:** readings outside 5–35 °C are dropped.
+
+#### Table 1: monthly SST anomaly files (`sst_forecast_data*.csv`)
+
+| Column | Description |
+|---|---|
+| `year`, `month` | Calendar month |
+| `sst_anom` | Area-weighted regional SST anomaly (°C) against a baseline fitted only on earlier years |
+| `n_cells` | Number of 2° grid cells with at least 24 readings that month |
+| `n_drifters` | Number of distinct drifters that month |
+| `low_coverage` | True if `n_cells` < 10 or `n_drifters` < 5 |
+
+#### Table 2: ICEN episode file (`icen_monthly_pm04.csv`)
+
+| Column | Description |
+|---|---|
+| `Date`, `Year`, `Month`, `Month_Name`, `season` | Calendar month and its centred 3-month season (e.g. DJF) |
+| `ICEN` | Coastal El Niño index (°C) |
+| `ENSO` | El Niño, La Niña or Neutral, using the ±0.4 °C, 3-month rule |
+| `Episode` | El Niño, La Niña or No |
+| `Episode_ID` | Episode number in time order (blank outside episodes) |
+
+### 🏭 Usage
+
+#### Environment
+
+The project uses Python ≥ 3.11 and `uv`. The key packages are numpy, pandas, scipy, scikit-learn, statsmodels, xgboost, matplotlib and openpyxl. You need clouddrift only for the first download and cartopy only for the study-region map.
+
+```bash
+uv sync
+```
+
+If you don't use `uv`, run `notebooks/0_setup.ipynb` once first: it creates a project environment, installs the pinned packages and registers the Jupyter kernel.
+
+On macOS, xgboost also needs `brew install libomp`.
+
+#### Drifter data
+
+The drifter data isn't in git. Run `2_data_cleaning.ipynb` first: it downloads the Clouddrift `gdp1h` arrays (about 8 GB) into `data/drifter/gdp1h/` and writes the regional extract to `data/drifter/`. Notebooks 3 and 4 read only that extract, so once it exists the `gdp1h/` arrays are needed only to rebuild it. If a download is interrupted, rerun the notebook and it picks up the missing arrays.
+
+#### Standalone scripts
+
+Standalone Python versions of the pipeline are in `src/`. The forecasting scripts include the extra hazard, ARIMA sim, GAM sim and blend models, and all scripts run from any folder:
+
+```bash
+python src/relabel_icen.py                  # ICEN episodes
+python src/forecast_monthly_sst.py          # next-month SST
+python src/forecast_episode_duration.py     # duration (RQ2), about 5 seconds
+python src/forecast_peak_sst_arima_gam.py   # peak SST (RQ3)
+```
+
+The three forecasting scripts only need the CSVs in `data/processed/`.
+
+### 🔄 Workflow
+
+To replicate the results, run the notebooks in `notebooks/` in the order listed below. Run every cell top to bottom within each notebook. Each notebook opens with what it does, its inputs and its outputs, and explains each step in its markdown cells.
+
+**Environment:** Python ≥ 3.11 with the packages in `pyproject.toml` (see [Usage](#-usage)).
+
+#### `0_setup.ipynb`: Setup
+
+**What it does**
+- Checks the Python version and creates a project environment (`.venv/`) if one isn't already running, without touching base Python or Anaconda.
+- Installs the exact package versions in `requirements.txt` and registers the **Christmas Casuals (.venv)** Jupyter kernel.
+- On macOS, installs `libomp` for xgboost if it is missing, then checks that every package imports.
+
+Skip this notebook if you use `uv sync`.
+
+#### `1_enso_episodes.ipynb`: El Niño / La Niña episodes
+
+**What it does**
+- Reads Peru's coastal El Niño index (ICEN), monthly from January 2001.
+- Labels each month El Niño, La Niña or Neutral with the ±0.4 °C, 3-month rule, and numbers each episode.
+- Prints the episode table: 28 episodes in 2001–2026, 23 of them in the 2001–2022 study period.
+
+**Outputs**
+- `data/processed/icen_monthly_pm04.csv`
+
+#### `2_data_cleaning.ipynb`: Drifter data cleaning
+
+**What it does**
+- Downloads the Clouddrift `gdp1h` arrays it needs into `data/drifter/gdp1h/` on the first run (needs internet and about 9.5 GB of free disk). This is the only notebook that downloads data.
+- Opens the global `gdp1h` arrays without loading them into memory, and reads them in chunks of 2 million readings.
+- Keeps readings in the study box (89°W–65°W, 49°S–4°S) and period (2001–2022), with valid velocity.
+- Converts SST from Kelvin to °C and drops faulty values (outside 5 to 35 °C) and readings on the Atlantic side of the Andes (south of 40°S, east of 71°W).
+- Recovers each reading's drifter ID and saves each drifter's drogue-loss date for the velocity analysis.
+
+**Outputs**
+- `data/drifter/humboldt_sst_readings.npz`: the regional extract, used by notebooks 3 and 4. The first run downloads the data and takes a while; later runs load the extract in seconds.
+
+#### `3_sst_anomalies.ipynb`: SST anomalies (feature engineering)
+
+**What it does**
+- Fits the normal SST for each place and time of year (B-splines in latitude and longitude, with annual and six-month cycles), using **only years before each forecast period**, so no future information leaks in.
+- Subtracts it from every reading, averages the anomalies in 2° cells and combines the cells with area weighting.
+- Flags low-coverage months.
+
+**Outputs**
+- `data/processed/sst_forecast_data_2011_2013.csv` (baseline 2001–2010)
+- `data/processed/sst_forecast_data_2014_2017.csv` (baseline 2001–2013)
+- `data/processed/sst_forecast_data.csv` (baseline 2001–2017)
+
+#### `4_exploratory_analysis.ipynb`: Exploratory analysis (RQ1)
+
+**What it does**
+- Loads the regional extract from notebook 2 and computes location-corrected SST anomalies.
+- Compares the SST anomaly with ONI and Niño 1+2.
+- Measures the current response to El Niño and La Niña, using drogued drifters only.
+- Compares fish catch with coastal events and drifter SST, and tests anchoveta catch forecasts.
+
+It needs the extract from notebook 2, plus `oni.ascii.txt`, `sstoi.indices` and `fish_data.xlsx` from `data/raw/`. It does not depend on notebooks 1 or 3.
+
+**Outputs**
+- The figures in `figures/` (SST vs ONI and Niño 1+2, forecast skill, fish catch, anchoveta models).
+
+#### `5_forecast_next_month_sst.ipynb`: Next-month SST forecast
+
+**What it does**
+- Trains on 2001–2017 and tests on 2018–2022 (58 months).
+- Compares persistence, linear regression on lagged SST and season, regression plus lagged ICEN, and XGBoost.
+- Reports MAE and RMSE overall and by ENSO phase.
+
+**Outputs**
+- Error tables (printed).
+
+#### `6_forecast_duration_and_peak.ipynb`: Duration and peak SST forecasts (RQ2 and RQ3)
+
+**What it does**
+- **Duration:** once an episode is confirmed (its 3rd month, plus 2 months for ICEN to be published), forecasts how many months it has left. ARIMA(1,0,1) is fitted to the ICEN history and forecast forward; the first month it crosses back inside ±0.4 °C is the predicted end. ETS and BSTS are tested too.
+- **Peak SST:** ARIMA's predicted end sets the horizon. A Generalised Additive Model (recent SST anomalies, season and a curved effect of ICEN) forecasts the monthly SST anomaly, and the highest (El Niño) or lowest (La Niña) point is the forecast peak.
+- **Baselines:** historical median and linear regression for duration; persistence and historical median for the peak.
+- **Evaluation:** MAE and RMSE on exactly the same episodes for every method (15 for duration, 5 for the peak), using only information available on the forecast date.
+
+Duration and peak share one notebook because the peak forecast reuses the duration code and its ARIMA forecasts.
+
+**Outputs**
+- Episode-by-episode forecast tables and MAE / RMSE summaries (printed).
+
+#### Summary
+
+Raw drifter readings → regional extract → location-corrected SST anomalies → El Niño / La Niña episodes from ICEN → next-month, duration and peak-SST forecasts compared against simple baselines.
+
+### 📁 Repository Structure
+
+```
+Christmas-Casuals/
+├── README.md
+├── main_README.md             ← this file: technical documentation and final report
+├── pyproject.toml / uv.lock / requirements.txt / .python-version
+├── notebooks/                 ← run in order, 0 to 6
+│   ├── 0_setup.ipynb
+│   ├── 1_enso_episodes.ipynb
+│   ├── 2_data_cleaning.ipynb
+│   ├── 3_sst_anomalies.ipynb
+│   ├── 4_exploratory_analysis.ipynb
+│   ├── 5_forecast_next_month_sst.ipynb
+│   ├── 6_forecast_duration_and_peak.ipynb
+│   └── archive/               the earlier combined notebooks
+├── src/                       ← standalone scripts (forecasting, plotting, preprocessing)
+├── data/
+│   ├── drifter/               downloaded by notebook 2, not in git (gdp1h/ arrays and regional extract)
+│   ├── raw/                   ICEN, ONI, Niño 1+2, fish catch
+│   └── processed/             relabelled ICEN, monthly SST anomaly files
+├── figures/                   all figures (archive_oni/ holds early ONI-based figures)
+└── docs/
+    ├── 01_exploratory_analysis_explained.md
+    ├── 02_forecasting_pipeline_explained.md
+    ├── forecasting_results.md
+    └── presentation_speech.docx
+```
+
+The two `docs/*_explained.md` walkthroughs describe the earlier combined notebooks in `notebooks/archive/`: `01` matches notebook 4, and `02` covers notebooks 1–3, 5 and 6. `docs/forecasting_results.md` documents the standalone scripts in `src/`.
+
 
 
 # DATA3001 Group 8 Final Report - How do El Niño and La Niña affect the Humboldt current?
