@@ -332,12 +332,12 @@ Our findings cover two forecasting targets, the remaining duration of an event a
 
 Next, we asked: within the remaining event, what is the strongest SST anomaly we can expect? For the remaining SST extreme, we used ARIMA’s predicted duration to define the forecast window and then we applied GAM to forecast monthly drifter SST anomalies. We selected the warmest predicted anomaly for El Niño and the coldest for La Niña.
 
-| Phase | Historical Median | Regression | ARIMA |
+| Phase | Historical Median | Persistence | ARIMA |
 | --- | --- | --- | --- |
-| El Niño (n = 6) | 1.83/3.76 | 1.85/2.86 | 1.83/3.39 |
-| La Niña (n = 7) | 3.07/4.00 | 2.67/3.48 | 2.57/3.12 |
+| El Niño (n = 1) | 0.299/0.299 | 0.786/0.786 | 0.608/0.608 |
+| La Niña (n = 3) | 0.390/0.428 | 0.319/0.350 | 0.165/0.183 |
 
-Figure 8: Model Performance for Regression and ARIMA - Remaining SST Extreme - MAE / RMSE - °C  
+Figure 8: Model Performance for ARIMA + GAM - Remaining SST Extreme - MAE / RMSE - °C  
 
 As shown in Figure 8, compared with persistence, for El Niño, the average absolute error fell from 0.786 to 0.608 degrees Celsius, an improvement of around 23%. For La Niña, it fell from 0.319 to 0.165 degrees, a reduction of almost half. Thus showing that the model was more effective than carrying the current value forward. 
 
