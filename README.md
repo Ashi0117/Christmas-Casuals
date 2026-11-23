@@ -229,6 +229,7 @@ The two `docs/*_explained.md` walkthroughs describe the earlier combined noteboo
 
 
 
+
 # DATA3001 Group 8 Final Report - How do El Niño and La Niña affect the Humboldt current?
 
 ## Introduction
@@ -250,6 +251,7 @@ To define an El Niño or La Niña event, we initially used NOAA's Oceanic Niño 
 ## Region Analysis
 <img width="3200" height="1800" alt="image" src="https://github.com/user-attachments/assets/af329a58-1aa7-4b30-98c8-c7457a92b6c8" />
 
+Figure 1: Map of the Humboldt Current overlaid with our region box. Base map is from Natural Earth, overlay done using Cartopy in Python.
 
 Our group was fascinated by El Niño and La Niña and we wanted to investigate whether the impact these phenomena would have on drifters. We also wanted to choose a region that had a tangible economic impact to aid our business case. The Humboldt Current checked both of these requirements, as it is close to the Niño 3.4 region and provides 20-30% of the world's marine catch. We defined our region as shown in the image above, with coordinates 89-65°W and 4-49°S.
 
