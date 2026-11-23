@@ -36,7 +36,7 @@ We study how El Niño and La Niña change sea surface temperature (SST) and surf
 | **RQ1** | How large are the anomalous shifts in surface velocity (u′, v′) and SST across the Humboldt Current during El Niño and La Niña? |
 | **RQ2** | Once an El Niño or La Niña is confirmed, can we predict how long it will last? |
 | **RQ3** | Can we predict its effect on SST: the most extreme SST anomaly still to come? |
-| RQ4        | Can we forcecast the impact an an El Niño or La Niña has on fishing                                                                               |
+| RQ4        | Can we forcecast the impact an an El Niño or La Niña has on fishing?                                                                               |
 
 ### 📓 Data Description
 
