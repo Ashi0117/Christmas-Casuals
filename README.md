@@ -245,12 +245,17 @@ SST:
 We calculated sea surface temperature anomalies, meaning how far the temperature is from what is normal for that location and time of year. 
 
 <img width="1439" height="673" alt="Screenshot 2026-10-01 at 12 56 09 pm" src="https://github.com/user-attachments/assets/14b232cb-7e4d-4cde-a88c-a221527edade" />
-Figure 1 compares the El Niño of March 2015 to May 2016 with the La Niña of March 2007 to May 2008. During El Niño, sea surface temperature rises by 1 to 2 degrees Celsius in places. During La Niña, it falls by a similar amount. In both events the strongest effect occurs between 15 and 30 degrees south. The maps also show considerable variation between neighbouring areas, so the response is not uniform across the region.
+
+Figure 2: SST anomalies in the Humboldt Current during El Niño and La Niña
+
+Figure 2 compares the El Niño of March 2015 to May 2016 with the La Niña of March 2007 to May 2008. During El Niño, sea surface temperature rises by 1 to 2 degrees Celsius in places. During La Niña, it falls by a similar amount. In both events the strongest effect occurs between 15 and 30 degrees south. The maps also show considerable variation between neighbouring areas, so the response is not uniform across the region.
 
 Wave Velocity:
 <img width="1216" height="970" alt="image" src="https://github.com/user-attachments/assets/365998e4-b9c4-4890-a3f6-4b920bb30e71" />
 
-In neutral conditions, trade winds influence the waves to flow westward in the north. Figure 2 shows drifter velocity. The top left panel gives the average flow from 2001 to 2022. Westward flow is shown in red and eastward flow in blue.
+Figure 3: Velocity patterns during neutral, El Niño and La Niña periods
+
+In neutral conditions, trade winds influence the waves to flow westward in the north. Figure 3 shows drifter velocity. The top left panel gives the average flow from 2001 to 2022. Westward flow is shown in red and eastward flow in blue.
 
 
 ## Feature Engineering
