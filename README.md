@@ -127,10 +127,6 @@ Given more time, we would have investigated drifters in other regions and how th
 The GDP dataset also contained 6-hourly observations from 2022 to 2025, however we only used hourly data from 2001 to 2022. We did not initially anticipate needing this extra data, as we failed to consider that number of El Niño and La Niña events was more important than number of individual drifter observations. This dataset would have given us an extra El Niño event from May 2023 to June 2024, which would have been quite valuable. Changing our model to incorporate 6-hourly data would have required restructuring our data and models, which we ran out of time to do.
 
 ## References
-Put this into ChatGPT later for proper referencing
-https://www.seaaroundus.org/
-https://www.aoml.noaa.gov/
-https://siofen.imarpe.gob.pe/
 
 Sea Around Us. (n.d.). Sea Around Us: Fisheries, ecosystems and biodiversity data. https://www.seaaroundus.org/
 
@@ -144,4 +140,4 @@ Our group used AI for coding, research and some scriptwriting. As all members of
 
 For research, our group had very little previous knowledge or understanding of global climate patterns or oceanography. Thus, we used AI for a lot of our research into these topics. For example, we asked ChatGPT to explain potential time lags between observed El Niño effects and changes in our specified region. AI was somewhat useful for this, giving us vague time intervals, but we decided that we would go in a different direction to avoid these time lags completely. A lot of other research in understanding El Niño and La Niña, was done generally without AI, as we wanted to gain a more comprehensive understanding of why these phenomena occur.
 
-For scriptwriting, we used AI for some of it, however more than 80% of the script and final report was written by us.
+For scriptwriting, we used AI for some of it, however more than 80% of the script and final report was written by us. AI was a useful tool for writing, helping us cut down some parts of our speech and also turn bullet points into proper paragraphs.
