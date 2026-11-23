@@ -1,6 +1,4 @@
 # DATA3001 Group 8 README
-## 🔧 Technical Documentation
-
 ### 📑 Table of Contents
 
 **Technical Documentation**
@@ -26,7 +24,7 @@
 - [Future Work](#future-work)
 - [References](#references)
 - [AI Statements](#ai-statements)
-
+## 🔧 Technical Documentation
 ### 🔍 Research Questions
 
 We study how El Niño and La Niña change sea surface temperature (SST) and surface currents in the Humboldt Current off Peru and Chile. We then ask whether knowing that one of these events is under way improves forecasts:
