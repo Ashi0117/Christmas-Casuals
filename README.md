@@ -306,6 +306,8 @@ For evaluation, we calculated the observed extreme measured from the month after
 ## Fish
 <img width="2263" height="3057" alt="image" src="https://github.com/user-attachments/assets/bd0e9ecf-d9db-47a6-9ce8-53d7b60c17e4" />
 
+Figure 5: Fish and drifter data, 2001-2019
+
 We wanted to link fishing data to our model to quantify the effect of El Niño and La Niña on the quantity of fishing in the Humboldt Current. We obtained data from Sea Around Us, whose website has been linked in our references. They provided catch data for each individual species in the Humboldt Current from the 1980s to 2019, however we only utilised Peruvian anchoveta data. Peruvian anchoveta is the most caught fish in the world and typically accounts for more than 80% of the catch in the Humboldt Current, hence, we used its catch numbers as our primary fish metric.
 
 Our first attempt to model catch data and El Niño and La Niña is captured in Notebook 4 under **Fish catch and coastal El Niño / La Niña**. It was somewhat uninformative as depicted in the second graph. We expected to see a negative correlation between SST and anchoveta numbers, as a higher SST would create less favourable conditions for fish due to reduced upwelling. This was somewhat observed, as the two sets of data returned a negative correlation coefficient of -0.13. During the extremely strong El Niño in 2016, anchoveta numbers went down more than one standard deviation, which supported our hypothesis. However, other El Niño and La Niña did not get picked up by the data. Other species shown in the graph provided similarly uncertain results.
