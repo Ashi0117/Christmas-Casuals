@@ -104,8 +104,6 @@ We attempted to model fishing numbers using our ARIMA model, essentially
 ## Limitations
 The primary limitation to our project was the few El Niño and La Niña events we had to work with. In total, we had 23 total events to work with, of which we assigned 5 episodes to be test episodes. With such a small model evaluation dataset, we were aware that any evaluation would have high variance and uncertainty regarding the actual performance of these models. We tried to counteract this by combining different model types for episode duration and peak forecasting, however we still acknowledge that this is a major limitation.
 
-Another limitation is
-
 ## Future Work
 <img width="2200" height="900" alt="image" src="https://github.com/user-attachments/assets/6f2848db-a57d-4e13-aa95-e5e641d6c7c5" />
 
