@@ -353,7 +353,7 @@ The primary limitation to our project was the few El Niño and La Niña events w
 ## Future Work
 <img width="2200" height="900" alt="image" src="https://github.com/user-attachments/assets/6f2848db-a57d-4e13-aa95-e5e641d6c7c5" />
 
-Figure 8: Humboldt Current Drifter SST vs ONI
+Figure 9: Humboldt Current Drifter SST vs ONI
 
 Given more time, we would have investigated drifters in other regions and how they correlate with drifters in the Humboldt Current during El Niño or La Niña periods. Figure 8 shows NOAA's Oceanic Niño Index (ONI) overlaid with our Humboldt SST anomaly data. There is little correlation between both plots, with drifter data missing most major peaks and troughs, including the major 2015-2016 El Niño. This lack of correlation led to our aforementioned decision to use ICEN values instead, which matched up with our data better. We did not get the opportunity to investigate whether this lack of correlation was because of drifters and ONI measuring different phenomena or because of locational differences. For example, we would have looked into drifters near Mexico or Australia, which were similar distances from the ONI measurement region. If these drifters also had little correlation with ONI, we would have tried to benchmark our El Niño and La Niña events differently, perhaps not using traditional datasets.
 
