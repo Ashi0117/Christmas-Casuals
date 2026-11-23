@@ -273,7 +273,7 @@ We identified coastal El Niño and La Niña episodes using the Coastal El Niño 
 As detailed in 1_enso_episodes.ipynb, an El Niño episode required ICEN to be greater to or equal to +0.4°C for at least three consecutive months while a La Niña episode required ICEN to be less than or equal to -0.4°C. We considered the third month as a confirmation and issued the duration forecast two months later to account for the assumed publication delay. 
 
 ## Data Cleaning and Preprocessing
-Here, we refer to the notebook 2_data_cleaning.ipynb. For our study, we used hourly drifter sea surface temperature (SST) which were converted from Kelvin to degrees Celsius. We filtered extreme values and outliers using a range of -2 to 35°C.
+Here, we refer to the notebook 2_data_cleaning.ipynb. For our study, we used hourly drifter sea surface temperature (SST) which were converted from Kelvin to degrees Celsius. We filtered extreme values and outliers using a range of 5 to 35°C.
 
 As explained in feature engineering, each SST was changed to account for ocean conditions, latitude and longitude. Then, we calculated SST anomaly as the observed temperature minus the expected temperature at a location and time of the year. Months represented by fewer than 10 cells or fewer than 5 drifters were flagged as having low coverage and were not used.
 
@@ -342,7 +342,7 @@ Figure 8: Model Performance for ARIMA + GAM - Remaining SST Extreme - MAE / RMSE
 As shown in Figure 8, compared with persistence, for El Niño, the average absolute error fell from 0.786 to 0.608 degrees Celsius, an improvement of around 23%. For La Niña, it fell from 0.319 to 0.165 degrees, a reduction of almost half. Thus showing that the model was more effective than carrying the current value forward. 
 
 However, the historical median performed best for the single El Niño event available for the three-model comparison. For La Niña, ARIMA plus GAM outperformed both benchmarks. So, the more complex model offered a clearer advantage for La Niña, while a simple historical benchmark remained valuable for El Niño.
-The evaluation included only one El Nino and three La Nina events with complete SST observations so these comparisons describe a small set of events. Therefore, limiting how broadly we can generalise the differences for peak SST.  
+The evaluation included only two El Nino and three La Nina events with complete SST observations so these comparisons describe a small set of events. Therefore, limiting how broadly we can generalise the differences for peak SST.  
 Overall, ARIMA estimated remaining duration with average absolute errors of around 1.8 to 2.6 months, matching or improving on the historical median in both phases. Our combined ARIMA–GAM model also improved SST-extreme forecasts over persistence, with the strongest advantage for La Niña.
 
 ## Limitations
