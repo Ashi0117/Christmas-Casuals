@@ -214,7 +214,7 @@ Christmas-Casuals/
 
 Our group will investigate how El Niño and La Niña affect near-surface temperature and currents in the Humboldt Current system, using Global Drifter Program (GDP) observations from 2001 to 2022. We will compare drifter sea surface temperature (SST) and velocity across El Niño, La Niña and neutral phases, build models to test whether ENSO information improves predictions of these variables, and use the results to estimate the economic cost of ENSO-driven disruption to the region's fisheries. Our final product is a set of ENSO-phase comparisons, an evaluated model, and a business case linking ocean anomalies to fishery losses.
 
-## Exec Summary
+## Executive Summary
 
 In this study, we examined how coastal El Niño and La Niña affect the Humboldt Current ooff Peru and Chile and whether those changes could inform fisheries planning. Using Global Drifter Program observations from 2001 to 2022 and the Coastal El Niño Index (ICEN), we analysed sea surface temperature (SST) and surface currents. Furthermore, given we know the start of an event, we predicted the duration of an episode and the peak SST that can be achieved during that specific episode. 
 
