@@ -100,14 +100,16 @@ We attempted to model fishing numbers using our ARIMA model, essentially
 ## Findings
 
 ## Limitations
-The primary limitation to our project was the few El Niño and La Niña events we had to work with. As previously mentioned, we had 
+The primary limitation to our project was the few El Niño and La Niña events we had to work with. In total, we had 23 total events to work with, of which we assigned 5 episodes to be test episodes. With such a small model evaluation dataset, we were aware that any evaluation would have high variance and uncertainty regarding the actual performance of these models. We tried to counteract this by combining different model types for episode duration and peak forecasting, however we still acknowledge that this is a major limitation.
 
-Secondly, the model's need for real-time data means that any delay in drifter observations will heavily limit the model's effectiveness and accuracy. If we apply this model to a real life context, fisheries need information about SST a few weeks to a month in advance to properly evaluate their business decisions.
+Another limitation is
 
 ## Future Work
 <img width="2200" height="900" alt="image" src="https://github.com/user-attachments/assets/6f2848db-a57d-4e13-aa95-e5e641d6c7c5" />
 
-Given more time, we would have investigated drifters in other regions and how they correlate with drifters in the Humboldt Current during El Niño or La Niña periods. The above image, 'sst_vs_oni.png' shows NOAA's Oceanic Niño Index (ONI) overlaid with our Humboldt SST anomaly data. There is little correlation between both plots, which led to our aforementioned decision to use ICEN values instead. We did not get the opportunity to investigate whether this lack of correlation was because of drifters and ONI measuring different phenomena or because of locational differences. If these drifters also had little correlation with ONI, we would have tried to benchmark our El Niño and La Niña events differently, perhaps not using traditional datasets.
+Given more time, we would have investigated drifters in other regions and how they correlate with drifters in the Humboldt Current during El Niño or La Niña periods. The above image, 'sst_vs_oni.png' shows NOAA's Oceanic Niño Index (ONI) overlaid with our Humboldt SST anomaly data. There is little correlation between both plots, which led to our aforementioned decision to use ICEN values instead. We did not get the opportunity to investigate whether this lack of correlation was because of drifters and ONI measuring different phenomena or because of locational differences. For example, we would have looked into drifters near Mexico or Australia, which were similar distances from the ONI measurement region. If these drifters also had little correlation with ONI, we would have tried to benchmark our El Niño and La Niña events differently, perhaps not using traditional datasets.
+
+The GDP dataset also contained 6-hourly observations from 2022 to 2025, however we only used hourly data from 2001 to 2022. We did not initially anticipate needing this extra data, as we failed to consider that number of El Niño and La Niña events was more important than number of individual drifter observations. This dataset would have given us an extra El Niño event from May 2023 to June 2024, which would have been quite valuable. Changing our model to incorporate 6-hourly data would have required restructuring our data and models, which we ran out of time to do.
 
 ## References
 
